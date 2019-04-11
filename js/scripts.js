@@ -1,4 +1,3 @@
-//https://stackoverflow.com/questions/15344104/smooth-character-movement-in-canvas-game-using-keyboard-controls
 
 //Setting the variables to become images
 var jouster1Left = new Image();
@@ -7,6 +6,7 @@ var jouster2Left = new Image();
 var jouster2Right = new Image();
 var joustLogo = new Image();
 var background = new Image();
+
 //Grabbing the source for the images.
 jouster1Left.src = "img/Jouster1Left.png";
 jouster1Right.src = "img/Jouster1Right.png";
@@ -15,6 +15,7 @@ jouster2Right.src = "img/Jouster2Right.png";
 joustLogo.src = "img/Logo.gif";
 background.src = "img/background.png";
 var blink = true;
+
 //Set the jouster as a variable
 var jouster = jouster1Left;
 var jouster2 = jouster2Right;
@@ -48,29 +49,14 @@ $().ready(function() {
   //update();
   drawMain();
 });
+
   // This functions allows for the update function to run on repeat
   function update(){
     requestAnimationFrame(update);
     getInput();
     physics();
     drawGame();
-    //wrap
-    if(player1PosX > canvas.width){
-      player1PosX = -40;
-    }
-    if(player2PosX > canvas.width){
-      player2PosX = -40;
-    }
-    if(player1PosX< -40) {
-      player1PosX = canvas.width;
-    }
-    if(player2PosX< -40) {
-      player2PosX = canvas.width;
-    }
-
   }
-
-  //We call the update function
 
   // These are the event listeners that allow for the user to experience no lag time on movement
   document.addEventListener('keydown', function(e){
@@ -98,26 +84,36 @@ $().ready(function() {
     blinkInterval = setInterval(blinkText, 500);
   }
 
-
+  // The blink Enter word on the start screen
   function blinkText(){
-
     if(!blink){
       context.font ="30px Fantasy";
       context.fillStyle = "white";
       context.fillText("Press Enter", canvas.width/2-80, canvas.height/2+60);
-      console.log("fill text");
       blink = true;
     }
     else if(blink){
-
-      console.log("fill black")
       context.fillStyle = "black";
       context.fillRect(canvas.width/2-100, canvas.height/2+30, 200, 35);
       blink = false;
     }
   }
 
+  // This will draw the game after the start screen is passed
   function drawGame(){
+    //wrap
+    if(player1PosX > canvas.width){
+      player1PosX = -40;
+    }
+    if(player2PosX > canvas.width){
+      player2PosX = -40;
+    }
+    if(player1PosX< -40) {
+      player1PosX = canvas.width;
+    }
+    if(player2PosX< -40) {
+      player2PosX = canvas.width;
+    }
 
     context.clearRect(0,0, canvas.width, canvas.height);
     //draw background
@@ -125,8 +121,8 @@ $().ready(function() {
     context.fillRect(0,0,canvas.width, canvas.height);
     context.drawImage(background,0, 0, canvas.width, canvas.height);
     //draw players
-    context.drawImage(jouster, player1PosX+=player1VelX, player1PosY+=player1VelY, 50, 50);
-    context.drawImage(jouster2, player2PosX+=player2VelX, player2PosY+=player2VelY, 50, 50);
+    context.drawImage(jouster, player1PosX+=player1VelX, player1PosY+=player1VelY, 35, 35);
+    context.drawImage(jouster2, player2PosX+=player2VelX, player2PosY+=player2VelY, 35, 35);
   }
 
   // This is the function to get the user input
@@ -175,12 +171,12 @@ $().ready(function() {
     }
   }
 
-  // This is the physics functionality
-
-
-  var floor = 425;
+  //This is the physics functionality
+  //colliders
+  var floor = 555;
   var ceiling = 0;
 
+ // This is the physics function
   function physics(){
 
     if(player1PosY <= floor){

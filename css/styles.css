@@ -1,7 +1,10 @@
+/*This is the container for the canvas*/
 .classContainer {
   justify-content: center;
   align-items: center;
 }
+
+/*This is directly for the canvas*/
 canvas {
   text-align: center;
   display: block;
@@ -9,18 +12,10 @@ canvas {
   margin-left: 380px;
   margin-top: 225px;
 }
+
+/*This is for the background which also acts as an overlay*/
 #backgroundMain{
   width: 1500px;
   position: absolute;
   z-index: 1;
 }
-/*#overLay {
-  width: 900px;
-  position: absolute;
-  z-index: 1;
-  margin-left: 305px;
-  margin-top: 200px;
-}*/
-/*body {
-  background-image: url("../img/joustCabinet.jpg");
-}*/
