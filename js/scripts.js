@@ -1,41 +1,49 @@
 //https://stackoverflow.com/questions/15344104/smooth-character-movement-in-canvas-game-using-keyboard-controls
 
-//
-
+//Setting the variables to become images
 var jouster1Left = new Image();
 var jouster1Right = new Image();
 var jouster2Left = new Image();
 var jouster2Right = new Image();
 
+//Grabbing the source for the images.
 jouster1Left.src = "img/Jouster1Left.png";
 jouster1Right.src = "img/Jouster1Right.png";
 jouster2Left.src = "img/Jouster2Left.png";
 jouster2Right.src = "img/Jouster2Right.png";
+
+//Set the jouster as a variable
 var jouster = jouster1Left;
 var jouster2 = jouster2Right;
+
 //Player 1 positioning and velocity
 player1PosX = 850;
 player1PosY = 450;
 player1VelX = 0;
 player1VelY = 0;
+
 //Player 2 positioning and velocity
 player2PosX = 0;
 player2PosY = 450;
 player2VelX = 0;
 player2VelY = 0;
+
+// This is where we are setting some initial variables
 friction = .98;
 moveSpeed = 1.5;
 jumpSpeed = 1.5;
 
+//Empty array for key functionality
 keys=[];
 
-
+// Document ready point
 $().ready(function() {
 
+  //Getting the canvas to work on and allow us to write
   canvas = $("#canvas").get(0);
   context = canvas.getContext("2d");
 
-
+  // This functions allows for the update function to run on repeat
   function update(){
     requestAnimationFrame(update);
     getInput();
@@ -57,15 +65,18 @@ $().ready(function() {
 
   }
 
+  //We call the update function
   update();
+
+  // These are the event listeners that allow for the user to experience no lag time on movement
   document.addEventListener('keydown', function(e){
     keys[e.keyCode] = true;
-
   });
   document.addEventListener('keyup', function(e){
     keys[e.keyCode] = false;
   });
 
+  // This is the function to draw the game
   function drawGame(){
 
     context.clearRect(0,0, canvas.width, canvas.height);
@@ -77,6 +88,7 @@ $().ready(function() {
     context.drawImage(jouster2, player2PosX+=player2VelX, player2PosY+=player2VelY, 50, 50);
   }
 
+  // This is the function to get the user input
   function getInput(){
     //HANDLE CONTROL INPUT
     //left
@@ -121,6 +133,8 @@ $().ready(function() {
 
     }
   }
+
+  // This is the physics functionality
   function physics(){
 
     if(player1PosY <= 450){
@@ -147,4 +161,5 @@ $().ready(function() {
     player2VelX*=friction; //friction
 
   }
+
 });
