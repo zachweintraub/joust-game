@@ -1,7 +1,26 @@
 .classContainer {
-  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 canvas {
+  text-align: center;
   display: block;
-  margin:auto;
+  position: absolute;
+  margin-left: 380px;
+  margin-top: 225px;
 }
+#backgroundMain{
+  width: 1500px;
+  position: absolute;
+  z-index: 1;
+}
+/*#overLay {
+  width: 900px;
+  position: absolute;
+  z-index: 1;
+  margin-left: 305px;
+  margin-top: 200px;
+}*/
+/*body {
+  background-image: url("../img/joustCabinet.jpg");
+}*/
