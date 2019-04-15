@@ -12,7 +12,10 @@ var jouster2RightFlap = new Image();
 
 var cloud = new Image();
 var cloudPos = 45;
-var joustLogo = new Image();
+var logo1 = new Image();
+var logo2 = new Image();
+var logo3 = new Image();
+var logo4 = new Image();
 var background = new Image();
 
 //Grabbing the source for the images.
@@ -25,9 +28,15 @@ jouster2LeftFlap.src = "img/sprite2_leftflap.png";
 jouster2Right.src = "img/sprite2_right.png";
 jouster2RightFlap.src = "img/sprite2_rightflap.png";
 cloud.src = "img/cloud0.png";
-joustLogo.src = "img/Logo.gif";
+logo1.src = "img/JoustLogo0.png";
+logo2.src = "img/JoustLogo1.png";
+logo3.src = "img/JoustLogo2.png";
+logo4.src = "img/JoustLogo3.png";
 background.src = "img/background.png";
 var blink = true;
+
+var logos = [logo1, logo2, logo3, logo4, logo3, logo2];
+
 
 //Set the jouster as a variable
 var jouster = jouster1Left;
@@ -99,6 +108,7 @@ $().ready(function() {
     if(e.keyCode == 13){
       update();
       clearInterval(blinkInterval);
+      clearInterval(logoLoop);
       keys[13] = false;
 
     }
@@ -112,8 +122,21 @@ $().ready(function() {
   function drawMain() {
     context.fillStyle = "black";
     context.fillRect(0,0, canvas.width, canvas.height);
-    context.drawImage(joustLogo, canvas.width/2-joustLogo.width/2, canvas.height/2-joustLogo.height);
+    // context.drawImage(joustLogo, canvas.width/2-joustLogo.width/2, canvas.height/2-joustLogo.height);
     blinkInterval = setInterval(blinkText, 500);
+    logoInterval = setInterval(logoLoop, 250);
+  }
+
+  loopCount = 0;
+  function logoLoop(){
+    if(loopCount > logos.length-1) {
+      loopCount = 0;
+    }
+    context.clearRect(canvas.width/2-144, canvas.height/2-110, 288, 110)
+    context.fillStyle = "black"
+    context.fillRect(canvas.width/2-144, canvas.height/2-110, 288, 110)
+    context.drawImage(logos[loopCount], canvas.width/2-144, canvas.height/2-110, 288, 110);
+    loopCount++;
   }
 
   // The blink Enter word on the start screen
