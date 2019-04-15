@@ -10,6 +10,8 @@ var jouster2LeftFlap = new Image();
 var jouster2Right = new Image();
 var jouster2RightFlap = new Image();
 
+var cloud = new Image();
+var cloudPos = 45;
 var joustLogo = new Image();
 var background = new Image();
 
@@ -22,6 +24,7 @@ jouster2Left.src = "img/sprite2_left.png";
 jouster2LeftFlap.src = "img/sprite2_leftflap.png";
 jouster2Right.src = "img/sprite2_right.png";
 jouster2RightFlap.src = "img/sprite2_rightflap.png";
+cloud.src = "img/cloud0.png";
 joustLogo.src = "img/Logo.gif";
 background.src = "img/background.png";
 var blink = true;
@@ -30,11 +33,20 @@ var blink = true;
 var jouster = jouster1Left;
 var jouster2 = jouster2Right;
 
+//clouds
+var clouds = [
+  {x: 0, y: 30, height: 100, width: 150, vel: 0.2},
+  {x: 50, y: 100, height: 150, width: 200, vel: 0.3},
+  {x: 900, y: 75, height: 80, width: 120, vel: -0.2},
+  {x: 700, y: 30, height: 200, width: 260, vel: 0.25},
+  {x: 453, y: 30, height: 160, width: 210, vel: -0.2}
+]
+
 var players = [
   //player 1
-  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450},
+  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0},
   //player 2
-  {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 0, spawnY: 450}
+  {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 0, spawnY: 450, score: 0}
 ]
 
 //Platforms
@@ -48,11 +60,6 @@ var platforms = [
   {x: 838, y: 356, width: 62, height: 25},
   {x: -100, y: 475, width: 1100, height: 25}
 ]
-
-
-//Collision Offset
-// colOffset = 35;
-
 
 // This is where we are setting some initial variables
 friction = .98;
@@ -143,11 +150,34 @@ $().ready(function() {
       players[1].x = canvas.width;
     }
 
+    //clear last frame
     context.clearRect(0,0, canvas.width, canvas.height);
-    //draw background
+
+
+    //fill canvas black
     context.fillStyle = "black";
     context.fillRect(0,0,canvas.width, canvas.height);
+
+    //draw cloud
+    for (var i = 0; i < clouds.length; i++) {
+      context.drawImage(cloud, clouds[i].x+=clouds[i].vel, clouds[i].y, clouds[i].height, clouds[i].width);
+      if (clouds[i].x > canvas.width && clouds[i].vel > 0){
+        clouds[i].x = -100;
+      }
+      if (clouds[i].x < 0 && clouds[i].vel < 0){
+        clouds[i].x = canvas.width + 100;
+      }
+    }
+
+    //draw platforms
     context.drawImage(background,0, 0, canvas.width, canvas.height);
+
+    //draw score
+    context.font = "30px Fantasy";
+    context.fillStyle = "white";
+    context.fillText(players[1].score, 388, 30);
+    context.fillText(players[0].score, 493, 30);
+
     //draw players
     context.drawImage(jouster, players[0].x+=players[0].velX, players[0].y+=players[0].velY, 35, 35);
     context.drawImage(jouster2, players[1].x+=players[1].velX, players[1].y+=players[1].velY, 35, 35);
@@ -259,25 +289,31 @@ $().ready(function() {
        if ( players[0].facingLeft != players[1].facingLeft){
          if(players[0].y < players[1].y){
            killPlayer(players[1]);
+           players[0].score++;
          }
          else if (players[0].y > players[1].y){
            killPlayer(players[0]);
+           players[1].score++;
          }
        }
        else if(players[0].facingLeft && players[1].facingLeft){
          if(players[0].x > players[1].x){
            killPlayer(players[1]);
+           players[0].score++;
          }
          else if(players[0].x < players[1].x){
            killPlayer(players[0]);
+           players[1].score++;
          }
        }
        else if(!players[0].facingLeft && !players[1].facingLeft){
          if(players[0].x < players[1].x){
            killPlayer(players[1]);
+           players[0].score++;
          }
          else if(players[0].x > players[1].x){
            killPlayer(players[0]);
+           players[1].score++;
          }
        }
 
