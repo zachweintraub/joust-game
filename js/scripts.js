@@ -20,20 +20,23 @@ var blink = true;
 var jouster = jouster1Left;
 var jouster2 = jouster2Right;
 
-//Player 1
-player1 = {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35}
-
-//Player 2
-player2 = {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35}
+var players = [
+  //players[0]
+  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35},
+  //players[1]
+  {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35}
+]
 
 //Platforms
 var platforms = [
+  {x: -100, y: 0, width: 1100, height: 5},
   {x: 0, y: 188, width: 125, height: 25},
   {x: 388, y: 130, width: 125, height: 25},
   {x: 775, y: 188, width: 125, height: 25},
   {x: 0, y: 356, width: 62, height: 25},
   {x: 290, y: 332, width: 315, height: 25},
-  {x: 838, y: 356, width: 62, height: 25}
+  {x: 838, y: 356, width: 62, height: 25},
+  {x: -100, y: 475, width: 1100, height: 25}
 ]
 
 
@@ -43,6 +46,7 @@ var platforms = [
 
 // This is where we are setting some initial variables
 friction = .98;
+gravity = .098;
 moveSpeed = 1.5;
 jumpSpeed = 1.5;
 
@@ -111,17 +115,20 @@ $().ready(function() {
   // This will draw the game after the start screen is passed
   function drawGame(){
     //wrap
-    if(player1.x > canvas.width){
-      player1.x = -40;
+    if(players[0].x > canvas.width){
+      players[0].x = -40;
     }
-    if(player2.x > canvas.width){
-      player2.x = -40;
+    if(players[1].x > canvas.width){
+      players[1].x = -40;
     }
-    if(player1.x< -40) {
-      player1.x = canvas.width;
+
+    players[1].x
+
+    if(players[0].x< -40) {
+      players[0].x = canvas.width;
     }
-    if(player2.x< -40) {
-      player2.x = canvas.width;
+    if(players[1].x< -40) {
+      players[1].x = canvas.width;
     }
 
     context.clearRect(0,0, canvas.width, canvas.height);
@@ -130,8 +137,8 @@ $().ready(function() {
     context.fillRect(0,0,canvas.width, canvas.height);
     context.drawImage(background,0, 0, canvas.width, canvas.height);
     //draw players
-    context.drawImage(jouster, player1.x+=player1.velX, player1.y+=player1.velY, 35, 35);
-    context.drawImage(jouster2, player2.x+=player2.velX, player2.y+=player2.velY, 35, 35);
+    context.drawImage(jouster, players[0].x+=players[0].velX, players[0].y+=players[0].velY, 35, 35);
+    context.drawImage(jouster2, players[1].x+=players[1].velX, players[1].y+=players[1].velY, 35, 35);
   }
 
   // This is the function to get the user input
@@ -139,130 +146,99 @@ $().ready(function() {
     //HANDLE CONTROL INPUT
     //left
     if(keys[37]){
-      if(player1.velX > -moveSpeed){
-        player1.velX--;
+      if(players[0].velX > -moveSpeed){
+        players[0].velX--;
       }
       jouster = jouster1Left;
     //right
     }
     if (keys[39]){
-      if(player1.velX < moveSpeed){
-        player1.velX++;
+      if(players[0].velX < moveSpeed){
+        players[0].velX++;
       }
       jouster= jouster1Right;
     //up
     }
     if (keys[38]){
-      if (player1.velY > -jumpSpeed) {
-        player1.velY--;
+      if (players[0].velY > -jumpSpeed) {
+        players[0].velY--;
       }
     // Player 2 controls
     }
     if(keys[65]){
-      if(player2.velX > -moveSpeed){
-        player2.velX--;
+      if(players[1].velX > -moveSpeed){
+        players[1].velX--;
       }
       jouster2 = jouster2Left;
     //right
     }
     if (keys[68]){
-      if(player2.velX < moveSpeed){
-        player2.velX++;
+      if(players[1].velX < moveSpeed){
+        players[1].velX++;
       }
       jouster2 = jouster2Right;
     //up
     }
     if (keys[87]){
-      if (player2.velY > -jumpSpeed) {
-        player2.velY--;
+      if (players[1].velY > -jumpSpeed) {
+        players[1].velY--;
       }
 
     }
   }
 
-  //This is the physics functionality
-  //colliders
-  var floor = 440;
-  var ceiling = 0;
-
- // This is the physics function
   function physics(){
 
-
-    player1.velX*=friction; //friction
-    player2.velX*=friction; //friction
+    for(var i = 0; i < players.length; i++){
+      players[i].velX*=friction; //friction
+      players[i].velY+=gravity;
+    }
 
 
     //Colliders
 
-    if(player1.y <= floor){
-      player1.velY+=.098; //gravity
-    }
-    else{
-      player1.y = floor;
-      player1.velY = 0;
-    }
-    if(player2.y <= floor){
-      player2.velY+=.098; //gravity
-    }
-    else{
-      player2.y = floor;
-      player2.velY = 0
-    }
+    // if(players[0].y <= floor){
+    //   players[0].velY+=.098; //gravity
+    // }
+    // else{
+    //   players[0].y = floor;
+    //   players[0].velY = 0;
+    // }
+    // if(players[1].y <= floor){
+    //   players[1].velY+=.098; //gravity
+    // }
+    // else{
+    //   players[1].y = floor;
+    //   players[1].velY = 0
+    // }
 
-    if(player1.x + player1.width > player2.x &&
-       player1.x < player2.x + player2.width &&
-       player1.y + player1.height > player2.y &&
-       player1.y < player2.y + player2.height){
+    if(players[0].x + players[0].width > players[1].x &&
+       players[0].x < players[1].x + players[1].width &&
+       players[0].y + players[0].height > players[1].y &&
+       players[0].y < players[1].y + players[1].height){
 
-       player1.velX *= -1;
-       player2.velX *= -1;
-    }
-
-    for(var i = 0; i < platforms.length; i++) {
-
-      if(player1.x + player1.width > platforms[i].x &&
-         player1.x < platforms[i].x + platforms[i].width &&
-         player1.y + player1.height > platforms[i].y &&
-         player1.y < platforms[i].y + platforms[i].height) {
-           //set pos on platform
-           if(player1.y < platforms[i].y) {
-             player1.y = platforms[i].y - player1.height;
-             player1.velY = 0;
-           }
-           else{
-             player1.velY = 0;
-             player1.y += 0.3;
-           }
-
-           console.log ("collided with: " + i + " " +platforms[i])
-         }
+       players[0].velX *= -1;
+       players[1].velX *= -1;
     }
 
-    for(var i = 0; i < platforms.length; i++) {
-      if(player2.x + player2.width > platforms[i].x &&
-         player2.x < platforms[i].x + platforms[i].width &&
-         player2.y + player2.height > platforms[i].y &&
-         player2.y < platforms[i].y + platforms[i].height) {
 
-           if(player2.y < platforms[i].y) {
-             player2.y = platforms[i].y - player2.height;
-             player2.velY = 0;
-           }
-           else{
-             player2.velY = 0;
-             player2.y += 0.3;
-           }
-
-           console.log ("collided with: " + i + " " +platforms[i])
-         }
+    for(var j = 0; j < players.length; j++) {
+      for(var i = 0; i < platforms.length; i++){
+        if(players[j].x + players[j].width > platforms[i].x &&
+          players[j].x < platforms[i].x + platforms[i].width &&
+          players[j].y + players[j].height > platforms[i].y &&
+          players[j].y < platforms[i].y + platforms[i].height) {
+            //set pos on platform
+            if(players[j].y < platforms[i].y) {
+              players[j].y = platforms[i].y - players[j].height;
+              players[j].velY = 0;
+            }
+            else{
+              players[j].velY = 0;
+              players[j].y += 0.3;
+            }
+            // console.log ("collided with: " + i + " " +platforms[i])
+        }
+      }
     }
-
-    if(player1.y <= ceiling){
-      player1.y = 0
-    }
-    if(player2.y <= ceiling){
-      player2.y = 0
-    }
-
   }
