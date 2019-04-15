@@ -1,17 +1,27 @@
 
 //Setting the variables to become images
 var jouster1Left = new Image();
+var jouster1LeftFlap = new Image();
 var jouster1Right = new Image();
+var jouster1RightFlap = new Image();
+
 var jouster2Left = new Image();
+var jouster2LeftFlap = new Image();
 var jouster2Right = new Image();
+var jouster2RightFlap = new Image();
+
 var joustLogo = new Image();
 var background = new Image();
 
 //Grabbing the source for the images.
-jouster1Left.src = "img/Jouster1Left.png";
-jouster1Right.src = "img/Jouster1Right.png";
-jouster2Left.src = "img/Jouster2Left.png";
-jouster2Right.src = "img/Jouster2Right.png";
+jouster1Left.src = "img/sprite1_left.png";
+jouster1LeftFlap.src = "img/sprite1_leftflap.png";
+jouster1Right.src = "img/sprite1_right.png";
+jouster1RightFlap.src = "img/sprite1_rightflap.png";
+jouster2Left.src = "img/sprite2_left.png";
+jouster2LeftFlap.src = "img/sprite2_leftflap.png";
+jouster2Right.src = "img/sprite2_right.png";
+jouster2RightFlap.src = "img/sprite2_rightflap.png";
 joustLogo.src = "img/Logo.gif";
 background.src = "img/background.png";
 var blink = true;
@@ -20,22 +30,36 @@ var blink = true;
 var jouster = jouster1Left;
 var jouster2 = jouster2Right;
 
-//Player 1 positioning and velocity
-player1PosX = 850;
-player1PosY = 450;
-player1VelX = 0;
-player1VelY = 0;
+var players = [
+  //player 1
+  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450},
+  //player 2
+  {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 0, spawnY: 450}
+]
 
-//Player 2 positioning and velocity
-player2PosX = 0;
-player2PosY = 450;
-player2VelX = 0;
-player2VelY = 0;
+//Platforms
+var platforms = [
+  {x: -100, y: 0, width: 1100, height: 5},
+  {x: 0, y: 188, width: 125, height: 25},
+  {x: 388, y: 130, width: 125, height: 25},
+  {x: 775, y: 188, width: 125, height: 25},
+  {x: 0, y: 356, width: 62, height: 25},
+  {x: 290, y: 332, width: 315, height: 25},
+  {x: 838, y: 356, width: 62, height: 25},
+  {x: -100, y: 475, width: 1100, height: 25}
+]
+
+
+//Collision Offset
+// colOffset = 35;
+
 
 // This is where we are setting some initial variables
 friction = .98;
+gravity = .098;
 moveSpeed = 1.5;
 jumpSpeed = 1.5;
+jumpForce = 2;
 
 //Empty array for key functionality
 keys=[];
@@ -76,6 +100,7 @@ $().ready(function() {
     keys[e.keyCode] = false;
   });
 
+
   // This is the function to draw the game
   function drawMain() {
     context.fillStyle = "black";
@@ -102,17 +127,20 @@ $().ready(function() {
   // This will draw the game after the start screen is passed
   function drawGame(){
     //wrap
-    if(player1PosX > canvas.width){
-      player1PosX = -40;
+    if(players[0].x > canvas.width){
+      players[0].x = -40;
     }
-    if(player2PosX > canvas.width){
-      player2PosX = -40;
+    if(players[1].x > canvas.width){
+      players[1].x = -40;
     }
-    if(player1PosX< -40) {
-      player1PosX = canvas.width;
+
+    // players[1].x
+
+    if(players[0].x< -40) {
+      players[0].x = canvas.width;
     }
-    if(player2PosX< -40) {
-      player2PosX = canvas.width;
+    if(players[1].x< -40) {
+      players[1].x = canvas.width;
     }
 
     context.clearRect(0,0, canvas.width, canvas.height);
@@ -121,85 +149,172 @@ $().ready(function() {
     context.fillRect(0,0,canvas.width, canvas.height);
     context.drawImage(background,0, 0, canvas.width, canvas.height);
     //draw players
-    context.drawImage(jouster, player1PosX+=player1VelX, player1PosY+=player1VelY, 35, 35);
-    context.drawImage(jouster2, player2PosX+=player2VelX, player2PosY+=player2VelY, 35, 35);
+    context.drawImage(jouster, players[0].x+=players[0].velX, players[0].y+=players[0].velY, 35, 35);
+    context.drawImage(jouster2, players[1].x+=players[1].velX, players[1].y+=players[1].velY, 35, 35);
   }
 
   // This is the function to get the user input
+
+
   function getInput(){
-    //HANDLE CONTROL INPUT
+    //Player 1 Controls
     //left
     if(keys[37]){
-      if(player1VelX > -moveSpeed){
-        player1VelX--;
+      if(players[0].velX > -moveSpeed){
+        players[0].velX--;
       }
       jouster = jouster1Left;
+      players[0].facingLeft = true;
     //right
     }
     if (keys[39]){
-      if(player1VelX < moveSpeed){
-        player1VelX++;
+      if(players[0].velX < moveSpeed){
+        players[0].velX++;
       }
       jouster= jouster1Right;
-    //up
+      players[0].facingLeft = false;
     }
-    if (keys[38]){
-      if (player1VelY > -jumpSpeed) {
-        player1VelY--;
+
+    //up
+    if(!keys[191] && players[0].isJumping){
+      if(players[0].facingLeft){
+        jouster = jouster1Left;
+      }
+      else if(!players[0].facingLeft){
+        jouster = jouster1Right;
+      }
+      players[0].isJumping = false;
+
+    }
+    if (keys[191] && !players[0].isJumping){
+      if (players[0].velY > -jumpSpeed) {
+        players[0].velY-=jumpForce;
+      }
+      players[0].isJumping = true;
+      if(players[0].facingLeft){
+          jouster = jouster1LeftFlap;
+      }
+      else{
+        jouster = jouster1RightFlap;
       }
     // Player 2 controls
     }
     if(keys[65]){
-      if(player2VelX > -moveSpeed){
-        player2VelX--;
+      if(players[1].velX > -moveSpeed){
+        players[1].velX--;
       }
       jouster2 = jouster2Left;
+      players[1].facingLeft = true;
     //right
     }
     if (keys[68]){
-      if(player2VelX < moveSpeed){
-        player2VelX++;
+      if(players[1].velX < moveSpeed){
+        players[1].velX++;
       }
       jouster2 = jouster2Right;
-    //up
+      players[1].facingLeft = false;
     }
-    if (keys[87]){
-      if (player2VelY > -jumpSpeed) {
-        player2VelY--;
+    //up
+    if(!keys[32] && players[1].isJumping){
+      if(players[1].facingLeft){
+        jouster2 = jouster2Left;
       }
-
+      else if(!players[1].facingLeft){
+        jouster2 = jouster2Right;
+      }
+      players[1].isJumping = false;
+    }
+    if (keys[32] && !players[1].isJumping){
+      if (players[1].velY > -jumpSpeed) {
+        players[1].velY-=jumpForce;
+      }
+      if(players[1].facingLeft){
+          jouster2 = jouster2LeftFlap;
+      }
+      else{
+        jouster2 = jouster2RightFlap;
+      }
+      players[1].isJumping = true;
     }
   }
 
-  //This is the physics functionality
-  //colliders
-  var floor = 555;
-  var ceiling = 0;
-
- // This is the physics function
   function physics(){
 
-    if(player1PosY <= floor){
-      player1VelY+=.098; //gravity
+    //gravity and friction
+    for(var i = 0; i < players.length; i++){
+      players[i].velX*=friction;
+      players[i].velY+=gravity;
     }
-    else{
-      player1PosY = floor;
-      player1VelY = 0
-    }
-    if(player2PosY <= floor){
-      player2VelY+=.098; //gravity
-    }
-    else{
-      player2PosY = floor;
-      player2VelY = 0
-    }
-    if(player1PosY <= ceiling){
-      player1PosY = 0
-    }
-    if(player2PosY <= ceiling){
-      player2PosY = 0
-    }
-    player1VelX*=friction; //friction
-    player2VelX*=friction; //friction
 
+    //player-player collision
+    if(players[0].x + players[0].width > players[1].x &&
+       players[0].x < players[1].x + players[1].width &&
+       players[0].y + players[0].height > players[1].y &&
+       players[0].y < players[1].y + players[1].height){
+
+       players[0].velX *= -1;
+       players[1].velX *= -1;
+
+       //determine winner
+       if ( players[0].facingLeft != players[1].facingLeft){
+         if(players[0].y < players[1].y){
+           killPlayer(players[1]);
+         }
+         else if (players[0].y > players[1].y){
+           killPlayer(players[0]);
+         }
+       }
+       else if(players[0].facingLeft && players[1].facingLeft){
+         if(players[0].x > players[1].x){
+           killPlayer(players[1]);
+         }
+         else if(players[0].x < players[1].x){
+           killPlayer(players[0]);
+         }
+       }
+       else if(!players[0].facingLeft && !players[1].facingLeft){
+         if(players[0].x < players[1].x){
+           killPlayer(players[1]);
+         }
+         else if(players[0].x > players[1].x){
+           killPlayer(players[0]);
+         }
+       }
+
+    }
+
+    //player-environment collision
+    for(var j = 0; j < players.length; j++) {
+      for(var i = 0; i < platforms.length; i++){
+        if(players[j].x + players[j].width > platforms[i].x &&
+          players[j].x < platforms[i].x + platforms[i].width &&
+          players[j].y + players[j].height > platforms[i].y &&
+          players[j].y < platforms[i].y + platforms[i].height) {
+            //above
+            if(players[j].y < platforms[i].y) {
+              players[j].y = platforms[i].y - players[j].height;
+              players[j].velY = 0;
+            }
+            //below
+            if(players[j].y > platforms[i].y){
+              players[j].velY = 0;
+              players[j].y += 0.3;
+            }
+            //left
+
+
+            //right
+
+        }
+      }
+    }
+  }
+
+  function killPlayer(player) {
+    player.y = 1000;
+    setTimeout(function(){
+      player.velX = 0;
+      player.y = player.spawnY;
+      player.x = player.spawnX;
+    }, 1000);
   }
