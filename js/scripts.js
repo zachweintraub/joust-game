@@ -26,6 +26,16 @@ player1 = {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35}
 //Player 2
 player2 = {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35}
 
+//Platforms
+var platforms = [
+  {x: 0, y: 188, width: 125, height: 25},
+  {x: 388, y: 130, width: 125, height: 25},
+  {x: 775, y: 188, width: 125, height: 25},
+  {x: 0, y: 356, width: 62, height: 25},
+  {x: 290, y: 332, width: 315, height: 25},
+  {x: 838, y: 356, width: 62, height: 25}
+]
+
 
 //Collision Offset
 // colOffset = 35;
@@ -172,7 +182,7 @@ $().ready(function() {
 
   //This is the physics functionality
   //colliders
-  var floor = 555;
+  var floor = 440;
   var ceiling = 0;
 
  // This is the physics function
@@ -184,18 +194,6 @@ $().ready(function() {
 
 
     //Colliders
-
-    if(player1.x + player1.width > player2.x &&
-       player1.x < player2.x + player2.width &&
-       player1.y + player1.height > player2.y &&
-       player1.y < player2.y + player2.height){
-
-       player1.velX *= -1;
-       player2.velX *= -1;
-
-
-    }
-
 
     if(player1.y <= floor){
       player1.velY+=.098; //gravity
@@ -211,6 +209,55 @@ $().ready(function() {
       player2.y = floor;
       player2.velY = 0
     }
+
+    if(player1.x + player1.width > player2.x &&
+       player1.x < player2.x + player2.width &&
+       player1.y + player1.height > player2.y &&
+       player1.y < player2.y + player2.height){
+
+       player1.velX *= -1;
+       player2.velX *= -1;
+    }
+
+    for(var i = 0; i < platforms.length; i++) {
+
+      if(player1.x + player1.width > platforms[i].x &&
+         player1.x < platforms[i].x + platforms[i].width &&
+         player1.y + player1.height > platforms[i].y &&
+         player1.y < platforms[i].y + platforms[i].height) {
+           //set pos on platform
+           if(player1.y < platforms[i].y) {
+             player1.y = platforms[i].y - player1.height;
+             player1.velY = 0;
+           }
+           else{
+             player1.velY = 0;
+             player1.y += 0.3;
+           }
+
+           console.log ("collided with: " + i + " " +platforms[i])
+         }
+    }
+
+    for(var i = 0; i < platforms.length; i++) {
+      if(player2.x + player2.width > platforms[i].x &&
+         player2.x < platforms[i].x + platforms[i].width &&
+         player2.y + player2.height > platforms[i].y &&
+         player2.y < platforms[i].y + platforms[i].height) {
+
+           if(player2.y < platforms[i].y) {
+             player2.y = platforms[i].y - player2.height;
+             player2.velY = 0;
+           }
+           else{
+             player2.velY = 0;
+             player2.y += 0.3;
+           }
+
+           console.log ("collided with: " + i + " " +platforms[i])
+         }
+    }
+
     if(player1.y <= ceiling){
       player1.y = 0
     }
