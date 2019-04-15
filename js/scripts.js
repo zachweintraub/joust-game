@@ -20,17 +20,16 @@ var blink = true;
 var jouster = jouster1Left;
 var jouster2 = jouster2Right;
 
-//Player 1 positioning and velocity
-player1PosX = 850;
-player1PosY = 450;
-player1VelX = 0;
-player1VelY = 0;
+//Player 1
+player1 = {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35}
 
-//Player 2 positioning and velocity
-player2PosX = 0;
-player2PosY = 450;
-player2VelX = 0;
-player2VelY = 0;
+//Player 2
+player2 = {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35}
+
+
+//Collision Offset
+// colOffset = 35;
+
 
 // This is where we are setting some initial variables
 friction = .98;
@@ -102,17 +101,17 @@ $().ready(function() {
   // This will draw the game after the start screen is passed
   function drawGame(){
     //wrap
-    if(player1PosX > canvas.width){
-      player1PosX = -40;
+    if(player1.x > canvas.width){
+      player1.x = -40;
     }
-    if(player2PosX > canvas.width){
-      player2PosX = -40;
+    if(player2.x > canvas.width){
+      player2.x = -40;
     }
-    if(player1PosX< -40) {
-      player1PosX = canvas.width;
+    if(player1.x< -40) {
+      player1.x = canvas.width;
     }
-    if(player2PosX< -40) {
-      player2PosX = canvas.width;
+    if(player2.x< -40) {
+      player2.x = canvas.width;
     }
 
     context.clearRect(0,0, canvas.width, canvas.height);
@@ -121,8 +120,8 @@ $().ready(function() {
     context.fillRect(0,0,canvas.width, canvas.height);
     context.drawImage(background,0, 0, canvas.width, canvas.height);
     //draw players
-    context.drawImage(jouster, player1PosX+=player1VelX, player1PosY+=player1VelY, 35, 35);
-    context.drawImage(jouster2, player2PosX+=player2VelX, player2PosY+=player2VelY, 35, 35);
+    context.drawImage(jouster, player1.x+=player1.velX, player1.y+=player1.velY, 35, 35);
+    context.drawImage(jouster2, player2.x+=player2.velX, player2.y+=player2.velY, 35, 35);
   }
 
   // This is the function to get the user input
@@ -130,42 +129,42 @@ $().ready(function() {
     //HANDLE CONTROL INPUT
     //left
     if(keys[37]){
-      if(player1VelX > -moveSpeed){
-        player1VelX--;
+      if(player1.velX > -moveSpeed){
+        player1.velX--;
       }
       jouster = jouster1Left;
     //right
     }
     if (keys[39]){
-      if(player1VelX < moveSpeed){
-        player1VelX++;
+      if(player1.velX < moveSpeed){
+        player1.velX++;
       }
       jouster= jouster1Right;
     //up
     }
     if (keys[38]){
-      if (player1VelY > -jumpSpeed) {
-        player1VelY--;
+      if (player1.velY > -jumpSpeed) {
+        player1.velY--;
       }
     // Player 2 controls
     }
     if(keys[65]){
-      if(player2VelX > -moveSpeed){
-        player2VelX--;
+      if(player2.velX > -moveSpeed){
+        player2.velX--;
       }
       jouster2 = jouster2Left;
     //right
     }
     if (keys[68]){
-      if(player2VelX < moveSpeed){
-        player2VelX++;
+      if(player2.velX < moveSpeed){
+        player2.velX++;
       }
       jouster2 = jouster2Right;
     //up
     }
     if (keys[87]){
-      if (player2VelY > -jumpSpeed) {
-        player2VelY--;
+      if (player2.velY > -jumpSpeed) {
+        player2.velY--;
       }
 
     }
@@ -179,27 +178,44 @@ $().ready(function() {
  // This is the physics function
   function physics(){
 
-    if(player1PosY <= floor){
-      player1VelY+=.098; //gravity
+
+    player1.velX*=friction; //friction
+    player2.velX*=friction; //friction
+
+
+    //Colliders
+
+    if(player1.x + player1.width > player2.x &&
+       player1.x < player2.x + player2.width &&
+       player1.y + player1.height > player2.y &&
+       player1.y < player2.y + player2.height){
+
+       player1.velX *= -1;
+       player2.velX *= -1;
+
+
+    }
+
+
+    if(player1.y <= floor){
+      player1.velY+=.098; //gravity
     }
     else{
-      player1PosY = floor;
-      player1VelY = 0
+      player1.y = floor;
+      player1.velY = 0;
     }
-    if(player2PosY <= floor){
-      player2VelY+=.098; //gravity
+    if(player2.y <= floor){
+      player2.velY+=.098; //gravity
     }
     else{
-      player2PosY = floor;
-      player2VelY = 0
+      player2.y = floor;
+      player2.velY = 0
     }
-    if(player1PosY <= ceiling){
-      player1PosY = 0
+    if(player1.y <= ceiling){
+      player1.y = 0
     }
-    if(player2PosY <= ceiling){
-      player2PosY = 0
+    if(player2.y <= ceiling){
+      player2.y = 0
     }
-    player1VelX*=friction; //friction
-    player2VelX*=friction; //friction
 
   }
