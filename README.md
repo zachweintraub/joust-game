@@ -3,7 +3,7 @@
 #### This project is for recreating the arcade classic of Joust, 4/14/19
 
 
-#### By _**Brendan Hellar**_
+#### By _**Insert**_
 
 ## Description
 
@@ -219,7 +219,7 @@ function physics(){
 
 ## Setup/Installation Requirements
 
--   Please clone from the Github repo https://bwhellar.github.io/Jousting/
+-   Please clone from the Github repo Insert
 -   By pressing Enter the player is allowed to play Joust.
 
 This app requires the internet as it uses HTMl and CSS and Javascript.
@@ -230,7 +230,7 @@ No known bugs
 
 ## Support and contact details
 
-If you have any issues please contact Brendan Hellar at bwhellar@gmail.com
+If you have any issues please contact Insert
 
 ## Technologies Used
 
@@ -240,4 +240,4 @@ HTML and CSS and Javascript
 
 MIT
 
-Copyright (c) 2019 **Brendan Hellar**
+Copyright (c) 2019 **Insert**
