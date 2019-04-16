@@ -1,7 +1,7 @@
-/*This is the container for the canvas*/
-.classContainer {
-  justify-content: center;
-  align-items: center;
+
+@font-face {
+  font-family: menuFont;
+  src: url("../Font/StitchWarrior.ttf");
 }
 
 /*This is directly for the canvas*/

@@ -229,14 +229,14 @@ function logoLoop(){
 // The blink Enter word on the start screen
 function blinkText(){
   if(!blink){
-    context.font ="30px Fantasy";
+    context.font ="30px menuFont";
     context.fillStyle = "white";
     context.fillText("Press Enter", canvas.width/2-80, canvas.height/2+60);
     blink = true;
   }
   else if(blink){
     context.fillStyle = "black";
-    context.fillRect(canvas.width/2-100, canvas.height/2+30, 200, 35);
+    context.fillRect(canvas.width/2-100, canvas.height/2+33, 200, 35);
     blink = false;
   }
 }
@@ -284,7 +284,7 @@ function drawGame(){
   context.drawImage(platformsImg,0, 0, canvas.width, canvas.height);
 
   //draw score
-  context.font = "30px Fantasy";
+  context.font = "30px menuFont";
   context.fillStyle = "white";
   context.fillText(players[1].score, 388, 30);
   context.fillText(players[0].score, 493, 30);
