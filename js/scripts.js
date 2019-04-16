@@ -23,6 +23,7 @@ var logo1 = new Image();
 var logo2 = new Image();
 var logo3 = new Image();
 var logo4 = new Image();
+var platformsImg = new Image();
 var background = new Image();
 
 //Grabbing the source for the images.
@@ -45,7 +46,8 @@ logo1.src = "img/JoustLogo0.png";
 logo2.src = "img/JoustLogo1.png";
 logo3.src = "img/JoustLogo2.png";
 logo4.src = "img/JoustLogo3.png";
-background.src = "img/background.png";
+platformsImg.src = "img/platformsImg.png";
+background.src = "img/background.png"
 
 //press enter blink text and logo array
 var blink = true;
@@ -202,8 +204,10 @@ function drawGame(){
   context.clearRect(0,0, canvas.width, canvas.height);
 
   //fill canvas black
-  context.fillStyle = "black";  //TODO INSERT NEW MOUNTAINS BACKGROUND
+  context.fillStyle = "black";
   context.fillRect(0,0,canvas.width, canvas.height);
+
+  context.drawImage(background,0,0, canvas.width, canvas.height);
 
   //draw cloud
   for (var i = 0; i < clouds.length; i++) {
@@ -217,7 +221,7 @@ function drawGame(){
   }
 
   //draw platforms
-  context.drawImage(background,0, 0, canvas.width, canvas.height);
+  context.drawImage(platformsImg,0, 0, canvas.width, canvas.height);
 
   //draw score
   context.font = "30px Fantasy";
