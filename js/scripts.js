@@ -89,18 +89,18 @@ var speedOrb = [speed1, speed1, speed1, speed1, speed2, speed2, speed2, speed2, 
 
 //The usage of => refers to the object. these prototypes control the speed powerup
 Object.prototype.speedReset = function() {
-  setTimeout(() => {
     this.moveSpeed = moveSpeed;
     this.jumpSpeed = jumpSpeed;
     this.jumpForce = jumpForce;
-  }, 10000);
 }
 
 Object.prototype.speedBoost = function(){
   this.moveSpeed = 4.5;
   this.jumpSpeed = 4.5;
   this.jumpForce = 3;
-  this.speedReset();
+  setTimeout(() => {
+    this.speedReset();
+  }, 10000);
 }
 
 //constructor for orb objects
@@ -151,7 +151,7 @@ var enemies = [
 
 //Platforms
 var platforms = [
-  {x: -100, y: 0, width: 1100, height: 5},
+  {x: -100, y: -105, width: 1100, height: 105},
   {x: 0, y: 188, width: 125, height: 25},
   {x: 388, y: 130, width: 125, height: 25},
   {x: 775, y: 188, width: 125, height: 25},
@@ -528,7 +528,7 @@ function physics(){
 
        if ( players[j].facingLeft != enemies[i].facingLeft){
          if(players[j].y < enemies[i].y){
-           killPlayer(enemies[i]);
+           killEnemy(enemies[i]);
          }
          else if (players[j].y > enemies[i].y){
            killPlayer(players[j]);
@@ -536,7 +536,7 @@ function physics(){
        }
        else if(players[j].facingLeft && enemies[i].facingLeft){
          if(players[j].x > enemies[i].x){
-           killPlayer(enemies[i]);
+           killEnemy(enemies[i]);
          }
          else if(players[j].x < enemies[i].x){
            killPlayer(players[j]);
@@ -544,7 +544,7 @@ function physics(){
        }
        else if(!players[j].facingLeft && !enemies[i].facingLeft){
          if(players[j].x < enemies[i].x){
-           killPlayer(enemies[i]);
+           killEnemy(enemies[i]);
          }
          else if(players[j].x > enemies[i].x){
            killPlayer(players[j]);
@@ -608,9 +608,20 @@ function physics(){
   }
 }
 
+function killEnemy(enemy) {
+  energy.push(new Energy(enemy.x, enemy.y, true));
+  enemy.y = 1000;
+  setTimeout(function(){
+    enemy.velX = 0;
+    enemy.y = enemy.spawnY;
+    enemy.x = enemy.spawnX;
+  }, 1000);
+}
+
 function killPlayer(player) {
   energy.push(new Energy(player.x, player.y, false));
   player.y = 1000;
+  player.speedReset();
   setTimeout(function(){
     player.velX = 0;
     player.y = player.spawnY;
