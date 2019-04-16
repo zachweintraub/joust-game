@@ -1,3 +1,5 @@
+var gameStarted = false;
+
 //Setting the variables to become images
 var jouster1Left = new Image();
 var jouster1LeftFlap = new Image();
@@ -71,8 +73,8 @@ var platforms = [
 ]
 
 // This is where we are setting some initial variables
-friction = .98;
-gravity = .098;
+friction = 0.98;
+gravity = 0.098;
 moveSpeed = 1.5;
 jumpSpeed = 1.5;
 jumpForce = 2;
@@ -105,12 +107,12 @@ $().ready(function() {
       e.preventDefault();
     }
     //Enter Key to kick off update loop
-    if(e.keyCode == 13){
+    if(e.keyCode == 13 && !gameStarted){
+      keys[13] = false;
       update();
       clearInterval(blinkInterval);
       clearInterval(logoLoop);
-      keys[13] = false;
-
+      gameStarted=true;
     }
   });
   document.addEventListener('keyup', function(e){
@@ -177,7 +179,6 @@ $().ready(function() {
     //clear last frame
     context.clearRect(0,0, canvas.width, canvas.height);
 
-
     //fill canvas black
     context.fillStyle = "black";  //TODO INSERT NEW MOUNTAINS BACKGROUND
     context.fillRect(0,0,canvas.width, canvas.height);
@@ -207,9 +208,7 @@ $().ready(function() {
     context.drawImage(jouster2, players[1].x+=players[1].velX, players[1].y+=players[1].velY, 35, 35);
   }
 
-
   // This is the function to get the user input and assign images
-
   //TODO FIX FLAP WHILE MOVING
   function getInput(){
     //Player 1 Controls
