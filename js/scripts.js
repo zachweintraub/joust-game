@@ -26,6 +26,18 @@ var logo4 = new Image();
 var platformsImg = new Image();
 var background = new Image();
 
+var energy1 = new Image();
+var energy2 = new Image();
+var energy3 = new Image();
+var energy4 = new Image();
+
+var speed1 = new Image();
+var speed2 = new Image();
+var speed3 = new Image();
+var speed4 = new Image();
+
+var soundtrack = new Audio();
+
 //Grabbing the source for the images.
 jouster1Left.src = "img/sprite1_left.png";
 jouster1LeftFlap.src = "img/sprite1_leftflap.png";
@@ -47,12 +59,66 @@ logo2.src = "img/JoustLogo1.png";
 logo3.src = "img/JoustLogo2.png";
 logo4.src = "img/JoustLogo3.png";
 platformsImg.src = "img/platformsImg.png";
-background.src = "img/background.png"
+background.src = "img/background.png";
+
+energy1.src = "img/Orbs/Energy1.png";
+energy2.src = "img/Orbs/Energy2.png";
+energy3.src = "img/Orbs/Energy3.png";
+energy4.src = "img/Orbs/Energy4.png";
+speed1.src = "img/Orbs/Speed0.png";
+speed2.src = "img/Orbs/Speed1.png";
+speed3.src = "img/Orbs/Speed2.png";
+speed4.src = "img/Orbs/Speed3.png";
+
+soundtrack.src = "img/JustMessingAround.wav";
+
+// This is where we are setting some initial variables
+const friction = 0.98;
+const gravity = 0.098;
+const moveSpeed = 1.5;
+const jumpSpeed = 1.5;
+const jumpForce = 2;
 
 //press enter blink text and logo array
 var blink = true;
 var logos = [logo1, logo2, logo3, logo4, logo3, logo2];
 
+//frame arrays for energy Orbs
+var pointsOrb = [energy1, energy1, energy1, energy1, energy2, energy2, energy2, energy2, energy3, energy3, energy3, energy3, energy4, energy4, energy4, energy4];
+var speedOrb = [speed1, speed1, speed1, speed1, speed2, speed2, speed2, speed2, speed3, speed3, speed3, speed3, speed4, speed4, speed4, speed4];
+
+//The usage of => refers to the object. these prototypes control the speed powerup
+Object.prototype.speedReset = function() {
+  setTimeout(() => {
+    this.moveSpeed = moveSpeed;
+    this.jumpSpeed = jumpSpeed;
+    this.jumpForce = jumpForce;
+  }, 10000);
+}
+
+Object.prototype.speedBoost = function(){
+  this.moveSpeed = 4.5;
+  this.jumpSpeed = 4.5;
+  this.jumpForce = 3;
+  this.speedReset();
+}
+
+//constructor for orb objects
+function Energy(x, y, boolean) {
+  this.x = x + 10;
+  this.y = y + 10;
+  this.vel = 3;
+  this.width = 20;
+  this.height = 20;
+  this.isPoint = boolean;
+  if(boolean) {
+    this.frames = pointsOrb;
+  } else this.frames = speedOrb;
+  this.frameCounter = 0;
+}
+
+//this array contains all of the powerups on screen
+var energy = [];
 
 //Set the jouster images as a variable
 var jouster = jouster1Left;
@@ -69,9 +135,9 @@ var clouds = [
 
 var players = [
   //player 1
-  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0},
+  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce},
   //player 2
-  {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 0, spawnY: 450, score: 0}
+  {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 0, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
 ]
 
 var enemies = [
@@ -95,13 +161,6 @@ var platforms = [
   {x: -100, y: 475, width: 1100, height: 25}
 ]
 
-// This is where we are setting some initial variables
-friction = 0.98;
-gravity = 0.098;
-moveSpeed = 1.5;
-jumpSpeed = 1.5;
-jumpForce = 2;
-
 //Empty array for key functionality
 keys=[];
 
@@ -117,6 +176,7 @@ $().ready(function() {
 
 // This functions allows for the update function to run on repeat
 function update(){
+  soundtrack.play();
   requestAnimationFrame(update);
   getInput();
   enemyMovement();
@@ -213,10 +273,10 @@ function drawGame(){
   for (var i = 0; i < clouds.length; i++) {
     context.drawImage(cloud, clouds[i].x+=clouds[i].vel, clouds[i].y, clouds[i].height, clouds[i].width);
     if (clouds[i].x > canvas.width && clouds[i].vel > 0){
-      clouds[i].x = -100;
+      clouds[i].x = -clouds[i].width;
     }
     if (clouds[i].x < 0 && clouds[i].vel < 0){
-      clouds[i].x = canvas.width + 100;
+      clouds[i].x = canvas.width + clouds[i].width;
     }
   }
 
@@ -229,8 +289,15 @@ function drawGame(){
   context.fillText(players[1].score, 388, 30);
   context.fillText(players[0].score, 493, 30);
 
-  //draw baddies
+  //Draw Orbs
+  for (var i = 0; i < energy.length; i++){
+    context.drawImage(energy[i].frames[energy[i].frameCounter], energy[i].x,energy[i].y+=energy[i].vel, energy[i].height, energy[i].width);
+    if(energy[i].frameCounter < energy[i].frames.length - 1) {
+      energy[i].frameCounter++;
+    } else energy[i].frameCounter = 0;
+  }
 
+  //draw baddies
   for(var i = 0; i < enemies.length; i++){
 
     context.drawImage(enemies[i].image, enemies[i].x+=enemies[i].velX, enemies[i].y+=enemies[i].velY, enemies[i].width, enemies[i].height);
@@ -247,7 +314,7 @@ function getInput(){
   //Player 1 Controls
   //left
   if(keys[37]){
-    if(players[0].velX > -moveSpeed){
+    if(players[0].velX > -players[0].moveSpeed){
       players[0].velX--;
     }
     if(!players[0].facingLeft){
@@ -257,7 +324,7 @@ function getInput(){
   //right
   }
   if (keys[39]){
-    if(players[0].velX < moveSpeed){
+    if(players[0].velX < players[0].moveSpeed){
       players[0].velX++;
     }
     if(players[0].facingLeft){
@@ -278,8 +345,8 @@ function getInput(){
 
   }
   if (keys[191] && !players[0].isJumping){
-    if (players[0].velY > -jumpSpeed) {
-      players[0].velY-=jumpForce;
+    if (players[0].velY > -players[0].jumpSpeed) {
+      players[0].velY-=players[0].jumpForce;
     }
     players[0].isJumping = true;
     if(players[0].facingLeft){
@@ -291,7 +358,7 @@ function getInput(){
   // Player 2 controls
   }
   if(keys[65]){
-    if(players[1].velX > -moveSpeed){
+    if(players[1].velX > -players[1].moveSpeed){
       players[1].velX--;
     }
     if(!players[1].facingLeft){
@@ -301,7 +368,7 @@ function getInput(){
   //right
   }
   if (keys[68]){
-    if(players[1].velX < moveSpeed){
+    if(players[1].velX < players[1].moveSpeed){
       players[1].velX++;
     }
     if(players[1].facingLeft){
@@ -320,8 +387,8 @@ function getInput(){
     players[1].isJumping = false;
   }
   if (keys[32] && !players[1].isJumping){
-    if (players[1].velY > -jumpSpeed) {
-      players[1].velY-=jumpForce;
+    if (players[1].velY > -players[1].jumpSpeed) {
+      players[1].velY-=players[1].jumpForce;
     }
     if(players[1].facingLeft){
         jouster2 = jouster2LeftFlap;
@@ -397,31 +464,25 @@ function physics(){
      if ( players[0].facingLeft != players[1].facingLeft){
        if(players[0].y < players[1].y){
          killPlayer(players[1]);
-         players[0].score++;
        }
        else if (players[0].y > players[1].y){
          killPlayer(players[0]);
-         players[1].score++;
        }
      }
      else if(players[0].facingLeft && players[1].facingLeft){
        if(players[0].x > players[1].x){
          killPlayer(players[1]);
-         players[0].score++;
        }
        else if(players[0].x < players[1].x){
          killPlayer(players[0]);
-         players[1].score++;
        }
      }
      else if(!players[0].facingLeft && !players[1].facingLeft){
        if(players[0].x < players[1].x){
          killPlayer(players[1]);
-         players[0].score++;
        }
        else if(players[0].x > players[1].x){
          killPlayer(players[0]);
-         players[1].score++;
        }
      }
   }
@@ -513,10 +574,42 @@ function physics(){
          }
     }
   }
-
+  // Energy orb platform collision
+  for(var j = 0; j < energy.length; j++) {
+    for(var i = 0; i < platforms.length; i++){
+      if(energy[j].x + energy[j].width > platforms[i].x &&
+        energy[j].x < platforms[i].x + platforms[i].width &&
+        energy[j].y + energy[j].height > platforms[i].y - 3 &&
+        energy[j].y < platforms[i].y + platforms[i].height) {
+          //above
+          if(energy[j].y < platforms[i].y) {
+            energy[j].y = platforms[i].y - energy[j].height - 3;
+            energy[j].velY = 0;
+          }
+      }
+    }
+  }
+  // Player energy orb collisons
+  for(var i = 0; i < players.length; i++){
+    for(var j = 0; j < energy.length; j++) {
+      if(energy[j].x + energy[j].width > players[i].x &&
+        energy[j].x < players[i].x + players[i].width &&
+        energy[j].y + energy[j].height > players[i].y &&
+        energy[j].y < players[i].y + players[i].height) {
+          //For point
+          if(energy[j].isPoint) {
+            players[i].score++
+          } else {
+            players[i].speedBoost();
+          }
+          energy.splice(j,1);
+      }
+    }
+  }
 }
 
 function killPlayer(player) {
+  energy.push(new Energy(player.x, player.y, false));
   player.y = 1000;
   setTimeout(function(){
     player.velX = 0;
