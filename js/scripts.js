@@ -207,6 +207,10 @@ $().ready(function() {
   }
 
 
+// !!!!!!!!   IDEA TO FIX FLAP ANIMATION WHILE MOVING:  ONLY SET JOUSTER TO jouster1Left/jouster2Left IF FACING LEFT = FALSE, THEN FACING LEFT = TRUE  !!!!!!!!!!!!!
+
+
+
   // This is the function to get the user input
   function getInput(){
     //Player 1 Controls
