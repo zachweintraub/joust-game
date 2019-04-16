@@ -217,16 +217,20 @@ $().ready(function() {
       if(players[0].velX > -moveSpeed){
         players[0].velX--;
       }
-      jouster = jouster1Left;
-      players[0].facingLeft = true;
+      if(!players[0].facingLeft){
+        jouster = jouster1Left;
+        players[0].facingLeft = true;
+      }
     //right
     }
     if (keys[39]){
       if(players[0].velX < moveSpeed){
         players[0].velX++;
       }
-      jouster= jouster1Right;
-      players[0].facingLeft = false;
+      if(players[0].facingLeft){
+        jouster= jouster1Right;
+        players[0].facingLeft = false;
+      }
     }
 
     //up
@@ -257,16 +261,20 @@ $().ready(function() {
       if(players[1].velX > -moveSpeed){
         players[1].velX--;
       }
-      jouster2 = jouster2Left;
-      players[1].facingLeft = true;
+      if(!players[1].facingLeft){
+        jouster2 = jouster2Left;
+        players[1].facingLeft = true;
+      }
     //right
     }
     if (keys[68]){
       if(players[1].velX < moveSpeed){
         players[1].velX++;
       }
-      jouster2 = jouster2Right;
-      players[1].facingLeft = false;
+      if(players[1].facingLeft){
+        jouster2 = jouster2Right;
+        players[1].facingLeft = false;
+      }
     }
     //up
     if(!keys[32] && players[1].isJumping){
