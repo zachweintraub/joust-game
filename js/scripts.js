@@ -11,6 +11,12 @@ var jouster2LeftFlap = new Image();
 var jouster2Right = new Image();
 var jouster2RightFlap = new Image();
 
+var badGuyLeft = new Image();
+var badGuyLeftFlap = new Image();
+var badGuyRight = new Image();
+var badGuyRightFlap = new Image();
+var badGuy = badGuyLeft;
+
 var cloud = new Image();
 var cloudPos = 45;
 var logo1 = new Image();
@@ -28,6 +34,12 @@ jouster2Left.src = "img/sprite2_left.png";
 jouster2LeftFlap.src = "img/sprite2_leftflap.png";
 jouster2Right.src = "img/sprite2_right.png";
 jouster2RightFlap.src = "img/sprite2_rightflap.png";
+
+badGuyLeft.src = "img/BadGuy_Left.png";
+badGuyLeftFlap.src = "img/BadGuy_LeftFlap.png";
+badGuyRight.src = "img/BadGuy_Right.png";
+badGuyRightFlap.src = "img/BadGuy_RightFlap.png";
+
 cloud.src = "img/cloud0.png";
 logo1.src = "img/JoustLogo0.png";
 logo2.src = "img/JoustLogo1.png";
@@ -58,6 +70,15 @@ var players = [
   {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0},
   //player 2
   {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 0, spawnY: 450, score: 0}
+]
+
+var enemies = [
+{x: 30, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 60, spawnY: 155, targetX: 30, targetY: 155},
+{x: 432, y: 95, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 450, spawnY: 95, targetX: 432, targetY: 95},
+{x: 835, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 835, spawnY: 155, targetX: 835, targetY: 155},
+{x: 5, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 5, spawnY: 321, targetX: 5, targetY: 321},
+{x: 860, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 960, spawnY: 321, targetX: 860, targetY: 321}
+
 ]
 
 //Platforms
@@ -96,6 +117,7 @@ $().ready(function() {
   function update(){
     requestAnimationFrame(update);
     getInput();
+    enemyMovement();
     physics();
     drawGame();
   }
@@ -203,9 +225,16 @@ $().ready(function() {
     context.fillText(players[1].score, 388, 30);
     context.fillText(players[0].score, 493, 30);
 
+    //draw baddies
+
+    for(var i = 0; i < enemies.length; i++){
+
+      context.drawImage(badGuy, enemies[i].x+=enemies[i].velX, enemies[i].y+=enemies[i].velY, enemies[i].width, enemies[i].height);
+    }
+
     //draw players
-    context.drawImage(jouster, players[0].x+=players[0].velX, players[0].y+=players[0].velY, 35, 35);
-    context.drawImage(jouster2, players[1].x+=players[1].velX, players[1].y+=players[1].velY, 35, 35);
+    context.drawImage(jouster, players[0].x+=players[0].velX, players[0].y+=players[0].velY, players[0].width, players[0].height);
+    context.drawImage(jouster2, players[1].x+=players[1].velX, players[1].y+=players[1].velY, players[1].width, players[1].height);
   }
 
   // This is the function to get the user input and assign images
@@ -300,12 +329,60 @@ $().ready(function() {
     }
   }
 
+  function enemyMovement() {
+
+    //x vel
+    for(var i = 0; i < enemies.length; i++){
+      if(enemies[i].targetX > enemies[i].x)
+      {
+        enemies[i].velX = 1;
+      }
+      else if (enemies[i].targetX < enemies[i].x){
+        enemies[i].velX = -1;
+      }
+      else {
+        enemies[i].targetX = Math.floor(Math.random() * canvas.width);
+      }
+    }
+
+    //y velX
+
+    for(var i = 0; i < enemies.length; i++) {
+      if(enemies[i].targetY < enemies[i].y)
+      {
+        // setTimeout(function(i) {
+          enemies[i].velY = -jumpForce;
+
+        // }, 200);
+
+      }
+      else if (enemies[i].targetY > enemies[i].y) {
+        enemies[i].velY = 0;
+      }
+      if (enemies[i].y > enemies[i].targetY - 10 && enemies[i].y < enemies[i].targetY + 10) {
+        enemies[i].targetY = Math.floor(Math.random() * 440);
+        console.log ("CHANGNING TARGET-Y");
+      }
+
+
+      if ( i == 0 ){
+        console.log("targetY: " + enemies[i].targetY + " y: " + enemies[i].y)}
+    }
+
+
+
+  }
+
   function physics(){
 
     //gravity and friction
     for(var i = 0; i < players.length; i++){
       players[i].velX*=friction;
       players[i].velY+=gravity;
+    }
+
+    for(var i = 0; i < enemies.length; i++){
+      enemies[i].velY+=gravity * 10;
     }
 
     //player-player collision
@@ -375,6 +452,27 @@ $().ready(function() {
         }
       }
     }
+
+    //enemy-environment collision
+    for(var i = 0; i < enemies.length; i++) {
+      for(var j = 0; j < platforms.length; j++){
+        if(enemies[i].x + enemies[i].width > platforms[j].x &&
+           enemies[i].x < platforms[j].x + platforms[j].width &&
+           enemies[i].y + platforms[j].height > platforms[j].y &&
+           enemies[i].y < platforms[j].y + platforms[j].height) {
+
+             if(enemies[i].y < platforms[j].y) {
+               enemies[i].y = platforms[j].y - enemies[i].height;
+               enemies[i].velY = 0;
+             }
+             if(enemies[i].y > platforms[j].y){
+               enemies[i].velY = 0;
+               enemies[i].y += 0.3;
+             }
+           }
+      }
+    }
+
   }
 
   function killPlayer(player) {
