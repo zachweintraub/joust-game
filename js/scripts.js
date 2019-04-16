@@ -1,4 +1,3 @@
-
 //Setting the variables to become images
 var jouster1Left = new Image();
 var jouster1LeftFlap = new Image();
@@ -33,12 +32,13 @@ logo2.src = "img/JoustLogo1.png";
 logo3.src = "img/JoustLogo2.png";
 logo4.src = "img/JoustLogo3.png";
 background.src = "img/background.png";
-var blink = true;
 
+//press enter blink text and logo array
+var blink = true;
 var logos = [logo1, logo2, logo3, logo4, logo3, logo2];
 
 
-//Set the jouster as a variable
+//Set the jouster images as a variable
 var jouster = jouster1Left;
 var jouster2 = jouster2Right;
 
@@ -127,6 +127,7 @@ $().ready(function() {
     logoInterval = setInterval(logoLoop, 250);
   }
 
+  //logo 'gif'
   loopCount = 0;
   function logoLoop(){
     if(loopCount > logos.length-1) {
@@ -178,7 +179,7 @@ $().ready(function() {
 
 
     //fill canvas black
-    context.fillStyle = "black";
+    context.fillStyle = "black";  //TODO INSERT NEW MOUNTAINS BACKGROUND
     context.fillRect(0,0,canvas.width, canvas.height);
 
     //draw cloud
@@ -206,9 +207,10 @@ $().ready(function() {
     context.drawImage(jouster2, players[1].x+=players[1].velX, players[1].y+=players[1].velY, 35, 35);
   }
 
-  // This is the function to get the user input
 
+  // This is the function to get the user input and assign images
 
+  //TODO FIX FLAP WHILE MOVING
   function getInput(){
     //Player 1 Controls
     //left
@@ -308,7 +310,7 @@ $().ready(function() {
        players[0].velX *= -1;
        players[1].velX *= -1;
 
-       //determine winner
+       //determine winner  TODO: REFACTOR DETERMINE WINNER
        if ( players[0].facingLeft != players[1].facingLeft){
          if(players[0].y < players[1].y){
            killPlayer(players[1]);
@@ -339,7 +341,6 @@ $().ready(function() {
            players[1].score++;
          }
        }
-
     }
 
     //player-environment collision
