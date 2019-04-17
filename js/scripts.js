@@ -145,11 +145,11 @@ var players = [
 ]
 
 var enemies = [
-{x: 30, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 60, spawnY: 155, targetX: 30, targetY: 155, image: badGuyRight},
-{x: 432, y: 95, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 450, spawnY: 95, targetX: 432, targetY: 95, image: badGuyRight},
-{x: 835, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 835, spawnY: 155, targetX: 835, targetY: 155, image: badGuyLeft},
-{x: 5, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 5, spawnY: 321, targetX: 5, targetY: 321, image: badGuyRight},
-{x: 860, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 960, spawnY: 321, targetX: 860, targetY: 321, image: badGuyLeft}
+{x: 30, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 60, spawnY: 155, targetX: 30, targetY: 155, image: badGuyRight, flapCounter: 0},
+{x: 432, y: 95, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 450, spawnY: 95, targetX: 432, targetY: 95, image: badGuyRight, flapCounter: 0},
+{x: 835, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 835, spawnY: 155, targetX: 835, targetY: 155, image: badGuyLeft, flapCounter: 0},
+{x: 5, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 5, spawnY: 321, targetX: 5, targetY: 321, image: badGuyRight, flapCounter: 0},
+{x: 860, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 960, spawnY: 321, targetX: 860, targetY: 321, image: badGuyLeft, flapCounter: 0}
 
 ]
 
@@ -303,8 +303,21 @@ function drawGame(){
 
   //draw baddies
   for(var i = 0; i < enemies.length; i++){
-
+    if(enemies[i].facingLeft) {
+      if(enemies[i].flapCounter < 5) {
+      enemies[i].image = badGuyLeft;
+    } else enemies[i].image = badGuyLeftFlap;
+    }
+    else {
+      if(enemies[i].flapCounter < 5) {
+        enemies[i].image = badGuyRight;
+      } else enemies[i].image = badGuyRightFlap;
+    }
     context.drawImage(enemies[i].image, enemies[i].x+=enemies[i].velX, enemies[i].y+=enemies[i].velY, enemies[i].width, enemies[i].height);
+    if(enemies[i].flapCounter > 9) {
+      enemies[i].flapCounter = 0;
+    }
+    else enemies[i].flapCounter++;
   }
 
   //draw players
@@ -412,12 +425,12 @@ function enemyMovement() {
     {
       enemies[i].velX = 1;
       enemies[i].facingLeft = false;
-      enemies[i].image = badGuyRight;
+      // enemies[i].image = badGuyRight;
     }
     else if (enemies[i].targetX < enemies[i].x){
       enemies[i].velX = -1;
       enemies[i].facingLeft = true;
-      enemies[i].image = badGuyLeft;
+      // enemies[i].image = badGuyLeft;
     }
     else {
       enemies[i].targetX = Math.floor(Math.random() * canvas.width);
