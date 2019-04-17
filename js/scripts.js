@@ -37,6 +37,10 @@ var speed3 = new Image();
 var speed4 = new Image();
 
 var soundtrack = new Audio();
+var enemyDeathSFX = new Audio();
+var playerDeathSFX = new Audio();
+var pointSoundSFX = new Audio();
+var speedBoostSFX = new Audio();
 
 //Grabbing the source for the images.
 jouster1Left.src = "img/sprite1_left.png";
@@ -71,6 +75,10 @@ speed3.src = "img/Orbs/Speed2.png";
 speed4.src = "img/Orbs/Speed3.png";
 
 soundtrack.src = "GameMusic.wav";
+enemyDeathSFX.src = "EnemyDeath.wav";
+playerDeathSFX.src = "PlayerDeath.wav";
+pointSoundSFX.src = "Point.wav";
+speedBoostSFX.src = "Speed.wav";
 
 // This is where we are setting some initial variables
 const friction = 0.98;
@@ -78,7 +86,7 @@ const gravity = 0.098;
 const moveSpeed = 1.5;
 const jumpSpeed = 1.5;
 const jumpForce = 2;
-const winScore = 1;
+const winScore = 10;
 
 //press enter blink text and logo array
 var blink = true;
@@ -635,11 +643,13 @@ function physics(){
         energy[j].y < players[i].y + players[i].height) {
           //For point
           if(energy[j].isPoint) {
+            pointSoundSFX.play();
             players[i].score++
             if(players[i].score >= winScore){
               winner(players[i]);
             }
           } else {
+            speedBoostSFX.play();
             players[i].speedBoost();
           }
           energy.splice(j,1);
@@ -653,6 +663,7 @@ function deleteOrb(orb) {
 }
 
 function killEnemy(enemy) {
+  enemyDeathSFX.play();
   energy.push(new Energy(enemy.x, enemy.y, true));
   enemy.y = 1000;
   setTimeout(function(){
@@ -663,6 +674,7 @@ function killEnemy(enemy) {
 }
 
 function killPlayer(player) {
+  playerDeathSFX.play();
   energy.push(new Energy(player.x, player.y, false));
   player.y = 1000;
   player.speedReset();
