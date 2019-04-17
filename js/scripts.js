@@ -173,6 +173,19 @@ var enemies = [
 
 ]
 
+var enemySpawns = [
+  {x: -100, y: 450},
+  {x: -100, y: 350},
+  {x: -100, y: 250},
+  {x: -100, y: 150},
+  {x: -100, y: 50},
+  {x: 1000, y: 50},
+  {x: 1000, y: 50},
+  {x: 1000, y: 50},
+  {x: 1000, y: 50},
+  {x: 1000, y: 50}
+]
+
 //Platforms
 var platforms = [
   {x: -100, y: -105, width: 1100, height: 105},
@@ -667,12 +680,10 @@ function deleteOrb(orb) {
 function killEnemy(enemy) {
   enemyDeathSFX.play();
   energy.push(new Energy(enemy.x, enemy.y, true));
-  enemy.y = 1000;
-  setTimeout(function(){
-    enemy.velX = 0;
-    enemy.y = enemy.spawnY;
-    enemy.x = enemy.spawnX;
-  }, 1000);
+  enemy.velX = 0;
+  enemy.y = enemySpawns[Math.floor(Math.random() * enemySpawns.length)].y;
+  enemy.x = enemySpawns[Math.floor(Math.random() * enemySpawns.length)].x;
+
 }
 
 function killPlayer(player) {
