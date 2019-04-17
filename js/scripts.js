@@ -37,10 +37,13 @@ var speed3 = new Image();
 var speed4 = new Image();
 
 var soundtrack = new Audio();
+soundtrack.src = "GameMusic.wav";
+
 var enemyDeathSFX = new Audio();
 var playerDeathSFX = new Audio();
 var pointSoundSFX = new Audio();
 var speedBoostSFX = new Audio();
+
 
 //Grabbing the source for the images.
 jouster1Left.src = "img/sprite1_left.png";
@@ -74,19 +77,14 @@ speed2.src = "img/Orbs/Speed1.png";
 speed3.src = "img/Orbs/Speed2.png";
 speed4.src = "img/Orbs/Speed3.png";
 
-soundtrack.src = "GameMusic.wav";
-enemyDeathSFX.src = "EnemyDeath.wav";
-playerDeathSFX.src = "PlayerDeath.wav";
-pointSoundSFX.src = "Point.wav";
-speedBoostSFX.src = "Speed.wav";
-
 // This is where we are setting some initial variables
 const friction = 0.98;
 const gravity = 0.098;
 const moveSpeed = 1.5;
 const jumpSpeed = 1.5;
 const jumpForce = 2;
-const winScore = 10;
+const winScore = 30;
+
 
 //press enter blink text and logo array
 var blink = true;
@@ -150,7 +148,7 @@ var players = [
   //player 1
   {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce},
   //player 2
-  {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 0, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
+  {x: 17, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 17, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
 ]
 
 var enemies = [
@@ -189,8 +187,6 @@ $().ready(function() {
 
 // This functions allows for the update function to run on repeat
 function update(){
-
-
   soundtrack.play();
   gameLoop = requestAnimationFrame(update);
   getInput();
@@ -237,11 +233,18 @@ function drawCredits() {
   context.fillRect(0,0,canvas.width, canvas.height);
   context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
+  context.font = "60px menuFont";
+  context.fillStyle = "white";
+  context.fillText("Winner", canvas.width/2 - 50, canvas.height/2 - 50)
+
+
   if(theWinner == players[0]){
-    context.drawImage(jouster, canvas.width/2, canvas.height/2, 50, 50);
+    context.drawImage(jouster, canvas.width/2, canvas.height/2-35, 50, 50);
+    context.fillText("Player 2", canvas.width/2 - 75, canvas.height/2 + 50);
   }
   else if(theWinner == players[1]){
-    context.drawImage(jouster2, canvas.width/2, canvas.height/2, 50, 50);
+    context.drawImage(jouster2, canvas.width/2, canvas.height/2-35, 50, 50);
+    context.fillText("Player 1", canvas.width/2 - 75, canvas.height/2 + 50);
   }
 }
 
@@ -282,9 +285,6 @@ function drawGame(){
   if(players[1].x > canvas.width){
     players[1].x = -40;
   }
-
-  // players[1].x
-
   if(players[0].x< -40) {
     players[0].x = canvas.width;
   }
@@ -354,7 +354,6 @@ function drawGame(){
 }
 
 // This is the function to get the user input and assign images
-//TODO FIX FLAP WHILE MOVING
 function getInput(){
   //Player 1 Controls
   //left
@@ -453,12 +452,10 @@ function enemyMovement() {
     {
       enemies[i].velX = 1;
       enemies[i].facingLeft = false;
-      // enemies[i].image = badGuyRight;
     }
     else if (enemies[i].targetX < enemies[i].x){
       enemies[i].velX = -1;
       enemies[i].facingLeft = true;
-      // enemies[i].image = badGuyLeft;
     }
     else {
       enemies[i].targetX = Math.floor(Math.random() * canvas.width);
@@ -466,15 +463,9 @@ function enemyMovement() {
   }
 
   //y velX
-
   for(var i = 0; i < enemies.length; i++) {
-    if(enemies[i].targetY < enemies[i].y)
-    {
-      // setTimeout(function(i) {
-        enemies[i].velY = -jumpForce;
-
-      // }, 200);
-
+    if(enemies[i].targetY < enemies[i].y) {
+      enemies[i].velY = -jumpForce;
     }
     else if (enemies[i].targetY > enemies[i].y) {
       enemies[i].velY = 0;
@@ -505,7 +496,7 @@ function physics(){
      players[0].velX *= -1;
      players[1].velX *= -1;
 
-     //determine winner  TODO: REFACTOR DETERMINE WINNER
+     //determine winner
      if ( players[0].facingLeft != players[1].facingLeft){
        if(players[0].y < players[1].y){
          killPlayer(players[1]);
@@ -549,12 +540,7 @@ function physics(){
           if(players[j].y > platforms[i].y){
             players[j].velY = 0;
             players[j].y += 0.3;
-          }
-          //left
-
-
-          //right
-
+        }
       }
     }
   }
@@ -594,8 +580,8 @@ function physics(){
          else if(players[j].x > enemies[i].x){
            killPlayer(players[j]);
          }
-       }
-     }
+        }
+      }
     }
   }
 
@@ -616,7 +602,7 @@ function physics(){
              enemies[i].velY = 0;
              enemies[i].y += 0.3;
            }
-         }
+       }
     }
   }
   // Energy orb platform collision
