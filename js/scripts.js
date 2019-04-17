@@ -78,6 +78,7 @@ const gravity = 0.098;
 const moveSpeed = 1.5;
 const jumpSpeed = 1.5;
 const jumpForce = 2;
+const winScore = 1;
 
 //press enter blink text and logo array
 var blink = true;
@@ -180,8 +181,10 @@ $().ready(function() {
 
 // This functions allows for the update function to run on repeat
 function update(){
+
+
   soundtrack.play();
-  requestAnimationFrame(update);
+  gameLoop = requestAnimationFrame(update);
   getInput();
   enemyMovement();
   physics();
@@ -215,6 +218,23 @@ function drawMain() {
   // context.drawImage(joustLogo, canvas.width/2-joustLogo.width/2, canvas.height/2-joustLogo.height);
   blinkInterval = setInterval(blinkText, 500);
   logoInterval = setInterval(logoLoop, 250);
+}
+
+var theWinner;
+function drawCredits() {
+
+  requestAnimationFrame(drawCredits);
+  context.clearRect(0,0,canvas.width, canvas.height);
+  context.fillStyle = "black";
+  context.fillRect(0,0,canvas.width, canvas.height);
+  context.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+  if(theWinner == players[0]){
+    context.drawImage(jouster, canvas.width/2, canvas.height/2, 50, 50);
+  }
+  else if(theWinner == players[1]){
+    context.drawImage(jouster2, canvas.width/2, canvas.height/2, 50, 50);
+  }
 }
 
 //logo 'gif'
@@ -616,6 +636,9 @@ function physics(){
           //For point
           if(energy[j].isPoint) {
             players[i].score++
+            if(players[i].score >= winScore){
+              winner(players[i]);
+            }
           } else {
             players[i].speedBoost();
           }
@@ -648,4 +671,34 @@ function killPlayer(player) {
     player.y = player.spawnY;
     player.x = player.spawnX;
   }, 1000);
+
+}
+
+function winner(player) {
+
+  theWinner=player;
+  gameStarted = false;
+  cancelAnimationFrame(gameLoop);
+
+  if(player == players[0]) console.log("player1 wins");
+  else if (player== players[1]) console.log("player2 wins");
+  resetGame();
+  drawCredits();
+}
+
+function resetGame(){
+
+  for(var i = 0; i < players.length; i++){
+    players[i].x = players[i].spawnX;
+    players[i].y = players[i].spawnY;
+    players[i].velX = 0;
+    players[i].score = 0;
+  }
+
+  for(var i = 0; i < enemies.length; i++){
+    enemies[i].x = enemies[i].spawnX;
+    enemies[i].y = enemies[i].spawnY;
+  }
+
+  energy = [];
 }
