@@ -37,6 +37,7 @@ var speed3 = new Image();
 var speed4 = new Image();
 
 var soundtrack = new Audio();
+soundtrack.src = "GameMusic.wav";
 
 //Grabbing the source for the images.
 jouster1Left.src = "img/sprite1_left.png";
@@ -70,7 +71,6 @@ speed2.src = "img/Orbs/Speed1.png";
 speed3.src = "img/Orbs/Speed2.png";
 speed4.src = "img/Orbs/Speed3.png";
 
-soundtrack.src = "GameMusic.wav";
 
 // This is where we are setting some initial variables
 const friction = 0.98;
@@ -78,7 +78,7 @@ const gravity = 0.098;
 const moveSpeed = 1.5;
 const jumpSpeed = 1.5;
 const jumpForce = 2;
-const winScore = 1;
+const winScore = 30;
 
 //press enter blink text and logo array
 var blink = true;
@@ -181,7 +181,6 @@ $().ready(function() {
 
 // This functions allows for the update function to run on repeat
 function update(){
-
   soundtrack.play();
   gameLoop = requestAnimationFrame(update);
   getInput();
@@ -280,9 +279,6 @@ function drawGame(){
   if(players[1].x > canvas.width){
     players[1].x = -40;
   }
-
-  // players[1].x
-
   if(players[0].x< -40) {
     players[0].x = canvas.width;
   }
@@ -352,7 +348,6 @@ function drawGame(){
 }
 
 // This is the function to get the user input and assign images
-//TODO FIX FLAP WHILE MOVING
 function getInput(){
   //Player 1 Controls
   //left
@@ -451,12 +446,10 @@ function enemyMovement() {
     {
       enemies[i].velX = 1;
       enemies[i].facingLeft = false;
-      // enemies[i].image = badGuyRight;
     }
     else if (enemies[i].targetX < enemies[i].x){
       enemies[i].velX = -1;
       enemies[i].facingLeft = true;
-      // enemies[i].image = badGuyLeft;
     }
     else {
       enemies[i].targetX = Math.floor(Math.random() * canvas.width);
@@ -464,15 +457,9 @@ function enemyMovement() {
   }
 
   //y velX
-
   for(var i = 0; i < enemies.length; i++) {
-    if(enemies[i].targetY < enemies[i].y)
-    {
-      // setTimeout(function(i) {
-        enemies[i].velY = -jumpForce;
-
-      // }, 200);
-
+    if(enemies[i].targetY < enemies[i].y) {
+      enemies[i].velY = -jumpForce;
     }
     else if (enemies[i].targetY > enemies[i].y) {
       enemies[i].velY = 0;
@@ -503,7 +490,7 @@ function physics(){
      players[0].velX *= -1;
      players[1].velX *= -1;
 
-     //determine winner  TODO: REFACTOR DETERMINE WINNER
+     //determine winner
      if ( players[0].facingLeft != players[1].facingLeft){
        if(players[0].y < players[1].y){
          killPlayer(players[1]);
@@ -547,12 +534,7 @@ function physics(){
           if(players[j].y > platforms[i].y){
             players[j].velY = 0;
             players[j].y += 0.3;
-          }
-          //left
-
-
-          //right
-
+        }
       }
     }
   }
@@ -592,8 +574,8 @@ function physics(){
          else if(players[j].x > enemies[i].x){
            killPlayer(players[j]);
          }
-       }
-     }
+        }
+      }
     }
   }
 
@@ -614,7 +596,7 @@ function physics(){
              enemies[i].velY = 0;
              enemies[i].y += 0.3;
            }
-         }
+       }
     }
   }
   // Energy orb platform collision
