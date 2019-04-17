@@ -142,7 +142,7 @@ var players = [
   //player 1
   {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce},
   //player 2
-  {x: 0, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 0, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
+  {x: 17, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 17, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
 ]
 
 var enemies = [
@@ -181,7 +181,6 @@ $().ready(function() {
 
 // This functions allows for the update function to run on repeat
 function update(){
-
 
   soundtrack.play();
   gameLoop = requestAnimationFrame(update);
@@ -229,11 +228,18 @@ function drawCredits() {
   context.fillRect(0,0,canvas.width, canvas.height);
   context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
+  context.font = "60px menuFont";
+  context.fillStyle = "white";
+  context.fillText("Winner", canvas.width/2 - 50, canvas.height/2 - 50)
+
+
   if(theWinner == players[0]){
-    context.drawImage(jouster, canvas.width/2, canvas.height/2, 50, 50);
+    context.drawImage(jouster, canvas.width/2, canvas.height/2-35, 50, 50);
+    context.fillText("Player 2", canvas.width/2 - 75, canvas.height/2 + 50);
   }
   else if(theWinner == players[1]){
-    context.drawImage(jouster2, canvas.width/2, canvas.height/2, 50, 50);
+    context.drawImage(jouster2, canvas.width/2, canvas.height/2-35, 50, 50);
+    context.fillText("Player 1", canvas.width/2 - 75, canvas.height/2 + 50);
   }
 }
 
