@@ -103,12 +103,18 @@ var speedOrb = [speed1, speed1, speed1, speed1, speed2, speed2, speed2, speed2, 
 
 //The usage of => refers to the object. these prototypes control the speed powerup
 Object.prototype.speedReset = function() {
-    this.moveSpeed = moveSpeed;
-    this.jumpSpeed = jumpSpeed;
-    this.jumpForce = jumpForce;
+    if(this.orbCount > 0) {
+      this.orbCount--;
+    }
+    if(this.orbCount < 1) {
+      this.moveSpeed = moveSpeed;
+      this.jumpSpeed = jumpSpeed;
+      this.jumpForce = jumpForce;
+    }
 }
 
 Object.prototype.speedBoost = function(){
+  this.orbCount++;
   this.moveSpeed = 4.5;
   this.jumpSpeed = 4.5;
   this.jumpForce = 3;
@@ -153,9 +159,9 @@ var clouds = [
 
 var players = [
   //player 1
-  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce},
+  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0, orbCount: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce},
   //player 2
-  {x: 17, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 17, spawnY: 450, score: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
+  {x: 17, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 17, spawnY: 450, score: 0, orbCount: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
 ]
 
 var enemies = [
@@ -641,7 +647,6 @@ function physics(){
           if(energy[j].isPoint) {
             pointSoundSFX.play();
             players[i].score++;
-            console.log("players["+i+"] - " + players[i].score);
             if(players[i].score >= winScore){
               winner(players[i]);
             }
@@ -674,7 +679,10 @@ function killPlayer(player) {
   playerDeathSFX.play();
   energy.push(new Energy(player.x, player.y, false));
   player.y = 1000;
-  player.speedReset();
+  player.orbCount = 0;
+  player.moveSpeed = moveSpeed;
+  player.jumpSpeed = jumpSpeed;
+  player.jumpForce = jumpForce;
   setTimeout(function(){
     player.velX = 0;
     player.y = player.spawnY;
