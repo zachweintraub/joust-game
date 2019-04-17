@@ -59,7 +59,7 @@ logo2.src = "img/JoustLogo1.png";
 logo3.src = "img/JoustLogo2.png";
 logo4.src = "img/JoustLogo3.png";
 platformsImg.src = "img/platformsImg.png";
-background.src = "img/background.png";
+background.src = "img/newBack.png";
 
 energy1.src = "img/Orbs/Energy1.png";
 energy2.src = "img/Orbs/Energy2.png";
@@ -117,7 +117,7 @@ function Energy(x, y, boolean) {
     this.frames = speedOrb;
     setTimeout(() => {
       deleteOrb(this);
-    }, 5000);}
+    }, 3000);}
   this.frameCounter = 0;
 }
 
