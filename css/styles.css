@@ -23,3 +23,7 @@ body {
   position: absolute;
   z-index: 1;
 }
+
+#font-loader {
+  background-color: #20221d;
+}

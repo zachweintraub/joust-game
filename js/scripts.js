@@ -37,7 +37,9 @@ var speed3 = new Image();
 var speed4 = new Image();
 
 var soundtrack = new Audio();
+var winSong = new Audio();
 soundtrack.src = "GameMusic.wav";
+winSong.src = "PossibleEndingSong.wav";
 
 var enemyDeathSFX = new Audio();
 var playerDeathSFX = new Audio();
@@ -79,7 +81,7 @@ speed4.src = "img/Orbs/Speed3.png";
 
 enemyDeathSFX.src = "EnemyDeath.wav";
 playerDeathSFX.src = "PlayerDeath.wav";
-pointSoundSFX.src = "Point.wav";
+pointSoundSFX.src = "Pointadd.wav";
 speedBoostSFX.src = "Speed.wav";
 
 // This is where we are setting some initial variables
@@ -192,6 +194,7 @@ $().ready(function() {
 
 // This functions allows for the update function to run on repeat
 function update(){
+  winSong.pause();
   soundtrack.play();
   gameLoop = requestAnimationFrame(update);
   getInput();
@@ -209,6 +212,7 @@ document.addEventListener('keydown', function(e){
   //Enter Key to kick off update loop
   if(e.keyCode == 13 && !gameStarted){
     keys[13] = false;
+
     update();
     clearInterval(blinkInterval);
     clearInterval(logoLoop);
@@ -232,6 +236,7 @@ function drawMain() {
 var theWinner;
 function drawCredits() {
 
+  winSong.play();
   requestAnimationFrame(drawCredits);
   context.clearRect(0,0,canvas.width, canvas.height);
   context.fillStyle = "black";
@@ -271,12 +276,12 @@ function blinkText(){
   if(!blink){
     context.font ="30px menuFont";
     context.fillStyle = "white";
-    context.fillText("Press Enter", canvas.width/2-80, canvas.height/2+60);
+    context.fillText("Press Enter", canvas.width/2-70, canvas.height/2+60);
     blink = true;
   }
   else if(blink){
     context.fillStyle = "black";
-    context.fillRect(canvas.width/2-100, canvas.height/2+33, 200, 35);
+    context.fillRect(canvas.width/2-80, canvas.height/2+33, 200, 35);
     blink = false;
   }
 }
@@ -705,4 +710,7 @@ function resetGame(){
   }
 
   energy = [];
+  soundtrack.pause();
+
+
 }
