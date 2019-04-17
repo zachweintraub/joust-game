@@ -9,13 +9,17 @@ canvas {
   text-align: center;
   display: block;
   position: absolute;
-  margin-left: 380px;
-  margin-top: 225px;
+  margin-left: 215px;
+  margin-top: 195px;
+}
+
+body {
+  background-color: #20221d;
 }
 
 /*This is for the background which also acts as an overlay*/
 #backgroundMain{
-  width: 1500px;
+  width: 1350px;
   position: absolute;
   z-index: 1;
 }

@@ -77,6 +77,11 @@ speed2.src = "img/Orbs/Speed1.png";
 speed3.src = "img/Orbs/Speed2.png";
 speed4.src = "img/Orbs/Speed3.png";
 
+enemyDeathSFX.src = "EnemyDeath.wav";
+playerDeathSFX.src = "PlayerDeath.wav";
+pointSoundSFX.src = "Point.wav";
+speedBoostSFX.src = "Speed.wav";
+
 // This is where we are setting some initial variables
 const friction = 0.98;
 const gravity = 0.098;
@@ -630,7 +635,8 @@ function physics(){
           //For point
           if(energy[j].isPoint) {
             pointSoundSFX.play();
-            players[i].score++
+            players[i].score++;
+            console.log("players["+i+"] - " + players[i].score);
             if(players[i].score >= winScore){
               winner(players[i]);
             }
