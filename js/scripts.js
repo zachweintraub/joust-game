@@ -299,8 +299,21 @@ function drawGame(){
 
   //draw baddies
   for(var i = 0; i < enemies.length; i++){
-
+    if(enemies[i].facingLeft) {
+      if(enemies[i].flapCounter < 5) {
+      enemies[i].image = badGuyLeft;
+    } else enemies[i].image = badGuyLeftFlap;
+    }
+    else {
+      if(enemies[i].flapCounter < 5) {
+        enemies[i].image = badGuyRight;
+      } else enemies[i].image = badGuyRightFlap;
+    }
     context.drawImage(enemies[i].image, enemies[i].x+=enemies[i].velX, enemies[i].y+=enemies[i].velY, enemies[i].width, enemies[i].height);
+    if(enemies[i].flapCounter > 9) {
+      enemies[i].flapCounter = 0;
+    }
+    else enemies[i].flapCounter++;
   }
 
   //draw players
@@ -408,12 +421,12 @@ function enemyMovement() {
     {
       enemies[i].velX = 1;
       enemies[i].facingLeft = false;
-      enemies[i].image = badGuyRight;
+      // enemies[i].image = badGuyRight;
     }
     else if (enemies[i].targetX < enemies[i].x){
       enemies[i].velX = -1;
       enemies[i].facingLeft = true;
-      enemies[i].image = badGuyLeft;
+      // enemies[i].image = badGuyLeft;
     }
     else {
       enemies[i].targetX = Math.floor(Math.random() * canvas.width);
