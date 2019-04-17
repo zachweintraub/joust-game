@@ -70,7 +70,7 @@ speed2.src = "img/Orbs/Speed1.png";
 speed3.src = "img/Orbs/Speed2.png";
 speed4.src = "img/Orbs/Speed3.png";
 
-soundtrack.src = "img/JustMessingAround.wav";
+soundtrack.src = "GameMusic.wav";
 
 // This is where we are setting some initial variables
 const friction = 0.98;
@@ -113,7 +113,11 @@ function Energy(x, y, boolean) {
   this.isPoint = boolean;
   if(boolean) {
     this.frames = pointsOrb;
-  } else this.frames = speedOrb;
+  } else {
+    this.frames = speedOrb;
+    setTimeout(() => {
+      deleteOrb(this);
+    }, 5000);}
   this.frameCounter = 0;
 }
 
@@ -606,6 +610,10 @@ function physics(){
       }
     }
   }
+}
+
+function deleteOrb(orb) {
+  energy.splice(energy.indexOf(orb), 1);
 }
 
 function killEnemy(enemy) {
