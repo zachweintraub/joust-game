@@ -1,13 +1,18 @@
 # Jousting
 
+
 #### This project recreates the arcade classic Joust, 4/18/19
+=======
+
+
 
 
 #### By _**Brendan Hellar, Zach Weintraub, Dylan Crocker, Crystal Fecteau**_
 
 ## Description
 
-#### The goal of this project is to recreate the arcade classic Joust.
+
+#### The goal of this project is to create a Joust inspired game using JavaScript.
 <br>
 
 ## Setup/Installation Requirements
@@ -56,8 +61,8 @@
 | Winner | |
 | :-------------     | :------------- |
 | **Win** | First Player to 30pts |
-| **Lose** | Player did now get to 30pts first |
-
+| **Lose** | Player did not get to 30pts first |
+=======
 
 ## Known Bugs
 
@@ -66,6 +71,7 @@ Point orbs occasionally disappear. Unknown how to recreate.
 ## Support and contact details
 
 If you have any issues please contact:
+
 * Brendan Hellar - bwhellar@gmail.com
 * Zach Weintraub - zachweintraub@gmail.com
 * Dylan Crocker - dylan.t.crocker@gmail.com
