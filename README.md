@@ -17,8 +17,9 @@
 | :-------------     | :------------- | :------------- |
 | **Load Game** | User input: "Press Enter" | Output: "Joust Game Play" |
 | **Restart Game**| User input: "Enter" | Output: "Reset Game" |
-
+```
 ##Player Commands
+```
 |  Player 1  |  Player 2 |
 | :-------------     | :------------- |
 | Left Screen | Right Screen |
