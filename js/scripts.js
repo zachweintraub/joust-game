@@ -1,11 +1,9 @@
-var gameStarted = false;
 
 //Setting the variables to become images
 var jouster1Left = new Image();
 var jouster1LeftFlap = new Image();
 var jouster1Right = new Image();
 var jouster1RightFlap = new Image();
-
 var jouster2Left = new Image();
 var jouster2LeftFlap = new Image();
 var jouster2Right = new Image();
@@ -38,9 +36,6 @@ var speed4 = new Image();
 
 var soundtrack = new Audio();
 var winSong = new Audio();
-soundtrack.src = "GameMusic.wav";
-winSong.src = "PossibleEndingSong.wav";
-
 var enemyDeathSFX = new Audio();
 var playerDeathSFX = new Audio();
 var pointSoundSFX = new Audio();
@@ -80,10 +75,15 @@ speed2.src = "img/Orbs/Speed1.png";
 speed3.src = "img/Orbs/Speed2.png";
 speed4.src = "img/Orbs/Speed3.png";
 //sounds
+soundtrack.src = "GameMusic.wav";
+winSong.src = "PossibleEndingSong.wav";
 enemyDeathSFX.src = "EnemyDeath.wav";
 playerDeathSFX.src = "PlayerDeath.wav";
 pointSoundSFX.src = "Pointadd.wav";
 speedBoostSFX.src = "Speed.wav";
+
+//flag used to toggle enter key functionality
+var gameStarted = false;
 
 //global values
 const friction = 0.98;
@@ -94,8 +94,7 @@ const jumpForce = 2;
 const moveBoost = 3.5;
 const jumpBoostForce = 2.5;
 const jumpBoostSpeed = 3.5;
-const winScore = 30;
-
+const winScore = 5;
 
 //press enter blink text and logo array
 var blink = true;
@@ -132,12 +131,11 @@ var players = [
 ]
 
 var enemies = [
-  {x: 30, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 60, spawnY: 155, targetX: 30, targetY: 155, image: badGuyRight, flapCounter: 0},
-  {x: 432, y: 95, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 450, spawnY: 95, targetX: 432, targetY: 95, image: badGuyRight, flapCounter: 0},
-  {x: 835, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 835, spawnY: 155, targetX: 835, targetY: 155, image: badGuyLeft, flapCounter: 0},
-  {x: 5, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 5, spawnY: 321, targetX: 5, targetY: 321, image: badGuyRight, flapCounter: 0},
-  {x: 860, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 960, spawnY: 321, targetX: 860, targetY: 321, image: badGuyLeft, flapCounter: 0}
-
+  {x: 30, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, targetX: 30, targetY: 155, startX: 30, startY: 155, image: badGuyRight, flapCounter: 0},
+  {x: 432, y: 95, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, targetX: 432, targetY: 95, startX: 432, startY: 95, image: badGuyRight, flapCounter: 0},
+  {x: 835, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, targetX: 835, targetY: 155, startX: 835, startY: 155, image: badGuyLeft, flapCounter: 0},
+  {x: 5, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, targetX: 5, targetY: 321, startX: 5, startY: 321, image: badGuyRight, flapCounter: 0},
+  {x: 860, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, targetX: 860, targetY: 321, startX: 860, startY: 321, image: badGuyLeft, flapCounter: 0}
 ]
 
 var enemySpawns = [
@@ -163,8 +161,6 @@ var platforms = [
   {x: 838, y: 356, width: 62, height: 25},
   {x: -100, y: 475, width: 1100, height: 25}
 ]
-
-
 
 //The usage of => refers to the object. these prototypes control the speed powerup
 Object.prototype.speedReset = function() {
@@ -225,6 +221,7 @@ function update(){
   getInput();
   enemyMovement();
   physics();
+  wrapPlayers();
   drawGame();
 }
 
@@ -247,10 +244,17 @@ document.addEventListener('keyup', function(e){
   keys[e.keyCode] = false;
 });
 
-// This is the function to draw the game
-function drawMain() {
+function fillBlack(){
   context.fillStyle = "black";
   context.fillRect(0,0, canvas.width, canvas.height);
+
+}
+
+
+// This is the function to draw the game
+function drawMain() {
+
+  fillBlack();
   blinkInterval = setInterval(blinkText, 500);
   logoInterval = setInterval(logoLoop, 250);
 }
@@ -261,14 +265,12 @@ function drawCredits() {
   winSong.play();
   requestAnimationFrame(drawCredits);
   context.clearRect(0,0,canvas.width, canvas.height);
-  context.fillStyle = "black";
-  context.fillRect(0,0,canvas.width, canvas.height);
+  fillBlack();
   context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
   context.font = "60px menuFont";
   context.fillStyle = "white";
   context.fillText("Winner", canvas.width/2 - 50, canvas.height/2 - 50)
-
 
   if(theWinner == players[0]){
     context.drawImage(jouster, canvas.width/2, canvas.height/2-35, 50, 50);
@@ -310,26 +312,12 @@ function blinkText(){
 
 // This will draw the game after the start screen is passed
 function drawGame(){
-  //wrap
-  if(players[0].x > canvas.width){
-    players[0].x = -40;
-  }
-  if(players[1].x > canvas.width){
-    players[1].x = -40;
-  }
-  if(players[0].x< -40) {
-    players[0].x = canvas.width;
-  }
-  if(players[1].x< -40) {
-    players[1].x = canvas.width;
-  }
 
   //clear last frame
   context.clearRect(0,0, canvas.width, canvas.height);
 
   //fill canvas black
-  context.fillStyle = "black";
-  context.fillRect(0,0,canvas.width, canvas.height);
+  fillBlack();
 
   context.drawImage(background,0,0, canvas.width, canvas.height);
 
@@ -384,6 +372,24 @@ function drawGame(){
   context.drawImage(jouster, players[0].x+=players[0].velX, players[0].y+=players[0].velY, players[0].width, players[0].height);
   context.drawImage(jouster2, players[1].x+=players[1].velX, players[1].y+=players[1].velY, players[1].width, players[1].height);
 }
+
+function wrapPlayers(){
+  //wrap
+  if(players[0].x > canvas.width){
+    players[0].x = -40;
+  }
+  if(players[1].x > canvas.width){
+    players[1].x = -40;
+  }
+  if(players[0].x< -40) {
+    players[0].x = canvas.width;
+  }
+  if(players[1].x< -40) {
+    players[1].x = canvas.width;
+  }
+}
+
+
 
 // This is the function to get the user input and assign images
 function getInput(){
@@ -492,10 +498,7 @@ function enemyMovement() {
     else {
       enemies[i].targetX = Math.floor(Math.random() * canvas.width);
     }
-  }
-
-  //y velX
-  for(var i = 0; i < enemies.length; i++) {
+  //y vel
     if(enemies[i].targetY < enemies[i].y) {
       enemies[i].velY = -jumpForce;
     }
@@ -507,6 +510,36 @@ function enemyMovement() {
     }
   }
 }
+
+function determineWinner(jouster1, jouster2){
+  //determine winner
+  if (jouster1.facingLeft != jouster2.facingLeft){
+    if(jouster1.y < jouster2.y){
+      killJouster(jouster2);
+    }
+    else if (jouster1.y > jouster2.y){
+      killJouster(jouster1);
+    }
+  }
+  else if(jouster1.facingLeft && jouster2.facingLeft){
+    if(jouster1.x > jouster2.x){
+      killJouster(jouster2);
+    }
+    else if(jouster1.x < jouster2.x){
+      killJouster(jouster1);
+    }
+  }
+  else if(!jouster1.facingLeft && !jouster2.facingLeft){
+    if(jouster1.x < jouster2.x){
+      killJouster(jouster2);
+    }
+    else if(jouster1.x > jouster2.x){
+      killJouster(jouster1);
+    }
+  }
+}
+
+
 function physics(){
 
   //gravity and friction
@@ -528,33 +561,25 @@ function physics(){
      players[0].velX *= -1;
      players[1].velX *= -1;
 
-     //determine winner
-     if ( players[0].facingLeft != players[1].facingLeft){
-       if(players[0].y < players[1].y){
-         killPlayer(players[1]);
-       }
-       else if (players[0].y > players[1].y){
-         killPlayer(players[0]);
-       }
-     }
-     else if(players[0].facingLeft && players[1].facingLeft){
-       if(players[0].x > players[1].x){
-         killPlayer(players[1]);
-       }
-       else if(players[0].x < players[1].x){
-         killPlayer(players[0]);
-       }
-     }
-     else if(!players[0].facingLeft && !players[1].facingLeft){
-       if(players[0].x < players[1].x){
-         killPlayer(players[1]);
-       }
-       else if(players[0].x > players[1].x){
-         killPlayer(players[0]);
-       }
-     }
+     determineWinner(players[0], players[1]);
   }
 
+  //enemy-player collision
+  for(var i = 0; i < enemies.length; i++){
+    for(var j = 0; j < players.length; j++){
+
+      if(players[j].x + players[j].width > enemies[i].x &&
+        players[j].x < enemies[i].x + enemies[i].width &&
+        players[j].y + players[j].height > enemies[i].y &&
+        players[j].y < enemies[i].y + enemies[i].height) {
+
+          players[j].velX *= -1;
+          enemies[i].velX *= -1;
+
+          determineWinner(players[j], enemies[i]);
+        }
+      }
+    }
 
   //player-environment collision
   for(var j = 0; j < players.length; j++) {
@@ -576,47 +601,6 @@ function physics(){
       }
     }
   }
-
-  //enemy-player collision
-  for(var i = 0; i < enemies.length; i++){
-    for(var j = 0; j < players.length; j++){
-
-      if(players[j].x + players[j].width > enemies[i].x &&
-         players[j].x < enemies[i].x + enemies[i].width &&
-         players[j].y + players[j].height > enemies[i].y &&
-         players[j].y < enemies[i].y + enemies[i].height) {
-
-       players[j].velX *= -1;
-       enemies[i].velX *= -1;
-
-       if ( players[j].facingLeft != enemies[i].facingLeft){
-         if(players[j].y < enemies[i].y){
-           killEnemy(enemies[i]);
-         }
-         else if (players[j].y > enemies[i].y){
-           killPlayer(players[j]);
-         }
-       }
-       else if(players[j].facingLeft && enemies[i].facingLeft){
-         if(players[j].x > enemies[i].x){
-           killEnemy(enemies[i]);
-         }
-         else if(players[j].x < enemies[i].x){
-           killPlayer(players[j]);
-         }
-       }
-       else if(!players[j].facingLeft && !enemies[i].facingLeft){
-         if(players[j].x < enemies[i].x){
-           killEnemy(enemies[i]);
-         }
-         else if(players[j].x > enemies[i].x){
-           killPlayer(players[j]);
-         }
-        }
-      }
-    }
-  }
-
 
   //enemy-environment collision
   for(var i = 0; i < enemies.length; i++) {
@@ -644,7 +628,6 @@ function physics(){
         energy[j].x < platforms[i].x + platforms[i].width &&
         energy[j].y + energy[j].height > platforms[i].y - 3 &&
         energy[j].y < platforms[i].y + platforms[i].height) {
-          //above
           if(energy[j].y < platforms[i].y) {
             energy[j].y = platforms[i].y - energy[j].height - 3;
             energy[j].velY = 0;
@@ -652,6 +635,7 @@ function physics(){
       }
     }
   }
+
   // Player energy orb collisons
   for(var i = 0; i < players.length; i++){
     for(var j = 0; j < energy.length; j++) {
@@ -666,11 +650,13 @@ function physics(){
             if(players[i].score >= winScore){
               winner(players[i]);
             }
-          } else {
+          }
+          //for speed boost
+          else {
             speedBoostSFX.play();
             players[i].speedBoost();
           }
-          energy.splice(j,1);
+          deleteOrb(energy[j]);
       }
     }
   }
@@ -680,29 +666,29 @@ function deleteOrb(orb) {
   energy.splice(energy.indexOf(orb), 1);
 }
 
-function killEnemy(enemy) {
-  enemyDeathSFX.play();
-  energy.push(new Energy(enemy.x, enemy.y, true));
-  enemy.velX = 0;
-  enemy.y = enemySpawns[Math.floor(Math.random() * enemySpawns.length)].y;
-  enemy.x = enemySpawns[Math.floor(Math.random() * enemySpawns.length)].x;
 
-}
-
-function killPlayer(player) {
-  playerDeathSFX.play();
-  energy.push(new Energy(player.x, player.y, false));
-  player.y = 1000;
-  player.orbCount = 0;
-  player.moveSpeed = moveSpeed;
-  player.jumpSpeed = jumpSpeed;
-  player.jumpForce = jumpForce;
-  setTimeout(function(){
-    player.velX = 0;
-    player.y = player.spawnY;
-    player.x = player.spawnX;
-  }, 1000);
-
+function killJouster(jouster) {
+  if (jouster == players[0] || jouster == players[1]){
+    playerDeathSFX.play();
+    energy.push(new Energy(jouster.x, jouster.y, false));
+    jouster.y = 1000;
+    jouster.orbCount = 0;
+    jouster.moveSpeed = moveSpeed;
+    jouster.jumpSpeed = jumpSpeed;
+    jouster.jumpForce = jumpForce;
+    setTimeout(function(){
+      jouster.velX = 0;
+      jouster.y = jouster.spawnY;
+      jouster.x = jouster.spawnX;
+    }, 1000);
+  }
+  else {
+    enemyDeathSFX.play();
+    energy.push(new Energy(jouster.x, jouster.y, true));
+    jouster.velX = 0;
+    jouster.y = enemySpawns[Math.floor(Math.random() * enemySpawns.length)].y;
+    jouster.x = enemySpawns[Math.floor(Math.random() * enemySpawns.length)].x;
+  }
 }
 
 function winner(player) {
@@ -727,12 +713,10 @@ function resetGame(){
   }
 
   for(var i = 0; i < enemies.length; i++){
-    enemies[i].x = enemies[i].spawnX;
-    enemies[i].y = enemies[i].spawnY;
+    enemies[i].x = enemies[i].startX;
+    enemies[i].y = enemies[i].startY;
   }
 
   energy = [];
   soundtrack.pause();
-
-
 }
