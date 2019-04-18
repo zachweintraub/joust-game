@@ -36,6 +36,7 @@ var speed4 = new Image();
 
 var soundtrack = new Audio();
 var winSong = new Audio();
+
 var enemyDeathSFX = new Audio();
 var playerDeathSFX = new Audio();
 var pointSoundSFX = new Audio();
@@ -66,21 +67,22 @@ logo4.src = "img/JoustLogo3.png";
 platformsImg.src = "img/platformsImg.png";
 background.src = "img/newBack.png";
 //orbs
-energy1.src = "img/Orbs/Energy1.png";
-energy2.src = "img/Orbs/Energy2.png";
-energy3.src = "img/Orbs/Energy3.png";
-energy4.src = "img/Orbs/Energy4.png";
-speed1.src = "img/Orbs/Speed0.png";
-speed2.src = "img/Orbs/Speed1.png";
-speed3.src = "img/Orbs/Speed2.png";
-speed4.src = "img/Orbs/Speed3.png";
+energy1.src = "img/orbs/Energy1.png";
+energy2.src = "img/orbs/Energy2.png";
+energy3.src = "img/orbs/Energy3.png";
+energy4.src = "img/orbs/Energy4.png";
+speed1.src = "img/orbs/Speed0.png";
+speed2.src = "img/orbs/Speed1.png";
+speed3.src = "img/orbs/Speed2.png";
+speed4.src = "img/orbs/Speed3.png";
 //sounds
-soundtrack.src = "GameMusic.wav";
-winSong.src = "PossibleEndingSong.wav";
-enemyDeathSFX.src = "EnemyDeath.wav";
-playerDeathSFX.src = "PlayerDeath.wav";
-pointSoundSFX.src = "Pointadd.wav";
-speedBoostSFX.src = "Speed.wav";
+enemyDeathSFX.src = "sounds/EnemyDeath.wav";
+playerDeathSFX.src = "sounds/PlayerDeath.wav";
+pointSoundSFX.src = "sound/Pointadd.wav";
+speedBoostSFX.src = "sounds/Speed.wav";
+soundtrack.src = "sounds/GameMusic.wav";
+winSong.src = "sounds/Credits.wav";
+
 
 //flag used to toggle enter key functionality
 var gameStarted = false;
