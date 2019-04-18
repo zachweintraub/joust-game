@@ -225,7 +225,7 @@ function update(){
 // These are the event listeners that allow for the user to experience no lag time on movement
 document.addEventListener('keydown', function(e){
   keys[e.keyCode] = true;
-  if(e.keyCode == 40){
+  if(e.keyCode == 40 || e.keyCode == 38 || e.keyCode == 32 || e.keyCode == 39 || e.keyCode == 37){
     e.preventDefault();
   }
   //Enter Key to kick off update loop
@@ -625,7 +625,7 @@ function physics(){
 
            if(enemies[i].y < platforms[j].y) {
              enemies[i].y = platforms[j].y - enemies[i].height;
-             enemies[i].velY = 0;
+             enemies[i].targetY = Math.floor(Math.random() * 440);
            }
            if(enemies[i].y > platforms[j].y){
              enemies[i].velY = 0;
