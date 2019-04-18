@@ -11,14 +11,15 @@
 #### The goal of this project is to recreate the arcade classic of Joust.  This project will display what we have learned up until week 5 of Epicodus.
 
 ###### This portion establishes variables to become images that will be utilzed in the program.
-```
+
+
 ### Specs
 | ** Player 1 ** | ** Player 2 **|
 | :-------------     | :------------- |
 | A = Move Left | Left Arrow = Move Left |
 | D = Move Right | Right Arrow = Move Right |
 | Spacebar = Fly/Jump | [/?] Key = Fly/Jump |
-```
+
 
 =======
 
