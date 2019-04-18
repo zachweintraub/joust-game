@@ -12,7 +12,7 @@
 ###### This portion establishes how to start, play, and win in Joust
 
 ### Specs
-##Load Game
+|Win Condtions|
 | Start Game | Input | Output |
 | :-------------     | :------------- | :------------- |
 | **Load Game** | User input: "Press Enter" | Output: "Joust Game Play" |
