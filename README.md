@@ -12,14 +12,16 @@
 ###### This portion establishes how to start, play, and win in Joust
 
 ### Specs
-|Win Condtions|
+
+## How to start game
+
 | Start Game | Input | Output |
 | :-------------     | :------------- | :------------- |
 | **Load Game** | User input: "Press Enter" | Output: "Joust Game Play" |
 | **Restart Game**| User input: "Enter" | Output: "Reset Game" |
-```
-##Player Commands
-```
+
+## Players Controls
+
 |  Player 1  |  Player 2 |
 | :-------------     | :------------- |
 | Left Screen | Right Screen |
@@ -27,24 +29,29 @@
 | D = Move Right | Right Arrow = Move Right |
 | Spacebar = Fly/Jump | [/?] Key = Fly/Jump |
 
-##Orbs
+## Orb Functions
+
 | Points | Input | Output |
 | :-------------     | :------------- | :------------- |
 | **Green Orb** | User input: "Picks up green orb from enemies killed" | Output: "Player gains one point" |
 | **Yellow Orb**| User input: "Picks up yellow orb from players killed" | Output: "Player gains 10 second speed boost" |
 
-##Conditions
- Kills| Action | Output |
+## Win and Lose Collison Condtions
+
+| Kills| Action | Output |
 | :-------------     | :------------- | :------------- |
 | **Win** | User Action: "Higher postion on face to face collison" | Output: "Higher player wins" |
 | **Lose**| User Action: "Lower postion on face to face collison" | Output: "Lower player dies and respawns" |
 | **Win** | User Action: "Player attacking from behind" | Output: "Attacking player wins" |
 | **Lose**| User Action: "Player facing away from collison" | Output: "Player facing away dies and respawns" |
 
-##Win Conditions
-| **Win** | First to 30pts |
+## Game Winner Condtions
 
-=======
+| Winner | | 
+| :-------------     | :------------- |
+| **Win** | First Player to 30pts |
+| **Lose** | Player did now get to 30pts first |
+
 
 ## Setup/Installation Requirements
 
@@ -60,17 +67,19 @@ No known bugs
 ## Support and contact details
 
 If you have any issues please contact:
-Brendan Hellar - 123@mail.com 
-Zach Weintraub - 123@mail.com
-Dylan Crocker - 23@mail.com
-Crystal Fecteau - Crystal_Fecteau@ymail.com
+* Brendan Hellar - 123@mail.com 
+* Zach Weintraub - 123@mail.com
+* Dylan Crocker - 23@mail.com
+* Crystal Fecteau - Crystal_Fecteau@ymail.com
 
 ## Technologies Used
 
-HTML and CSS and Javascript
+* HTML
+* CSS
+* JavaScript
 
 ### License
 
-MIT
+*This software is licensed under the MIT license*
 
-Copyright (c) 2019 **Brendan Hellar, Zach Weintraub, Dylan Crocker, Crystal Fecteau**
+Copyright (c) 2019**_{Brendan Hellar, Zach Weintraub, Dylan Crocker, Crystal Fecteau}_
