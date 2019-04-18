@@ -48,6 +48,7 @@ var speedBoostSFX = new Audio();
 
 
 //Grabbing the source for the images.
+//players
 jouster1Left.src = "img/sprite1_left.png";
 jouster1LeftFlap.src = "img/sprite1_leftflap.png";
 jouster1Right.src = "img/sprite1_right.png";
@@ -56,12 +57,12 @@ jouster2Left.src = "img/sprite2_left.png";
 jouster2LeftFlap.src = "img/sprite2_leftflap.png";
 jouster2Right.src = "img/sprite2_right.png";
 jouster2RightFlap.src = "img/sprite2_rightflap.png";
-
+//baddies
 badGuyLeft.src = "img/BadGuy_Left.png";
 badGuyLeftFlap.src = "img/BadGuy_LeftFlap.png";
 badGuyRight.src = "img/BadGuy_Right.png";
 badGuyRightFlap.src = "img/BadGuy_RightFlap.png";
-
+//environment
 cloud.src = "img/cloud0.png";
 logo1.src = "img/JoustLogo0.png";
 logo2.src = "img/JoustLogo1.png";
@@ -69,7 +70,7 @@ logo3.src = "img/JoustLogo2.png";
 logo4.src = "img/JoustLogo3.png";
 platformsImg.src = "img/platformsImg.png";
 background.src = "img/newBack.png";
-
+//orbs
 energy1.src = "img/Orbs/Energy1.png";
 energy2.src = "img/Orbs/Energy2.png";
 energy3.src = "img/Orbs/Energy3.png";
@@ -78,18 +79,21 @@ speed1.src = "img/Orbs/Speed0.png";
 speed2.src = "img/Orbs/Speed1.png";
 speed3.src = "img/Orbs/Speed2.png";
 speed4.src = "img/Orbs/Speed3.png";
-
+//sounds
 enemyDeathSFX.src = "EnemyDeath.wav";
 playerDeathSFX.src = "PlayerDeath.wav";
 pointSoundSFX.src = "Pointadd.wav";
 speedBoostSFX.src = "Speed.wav";
 
-// This is where we are setting some initial variables
+//global values
 const friction = 0.98;
 const gravity = 0.098;
 const moveSpeed = 1.5;
 const jumpSpeed = 1.5;
 const jumpForce = 2;
+const moveBoost = 3.5;
+const jumpBoostForce = 2.5;
+const jumpBoostSpeed = 3.5;
 const winScore = 30;
 
 
@@ -100,6 +104,67 @@ var logos = [logo1, logo2, logo3, logo4, logo3, logo2];
 //frame arrays for energy Orbs
 var pointsOrb = [energy1, energy1, energy1, energy1, energy2, energy2, energy2, energy2, energy3, energy3, energy3, energy3, energy4, energy4, energy4, energy4];
 var speedOrb = [speed1, speed1, speed1, speed1, speed2, speed2, speed2, speed2, speed3, speed3, speed3, speed3, speed4, speed4, speed4, speed4];
+
+//this array contains all of the powerups on screen
+var energy = [];
+
+//Empty array for key functionality
+var keys=[];
+
+//Set the jouster images as a variable
+var jouster = jouster1Left;
+var jouster2 = jouster2Right;
+
+//clouds
+var clouds = [
+  {x: 0, y: 30, height: 100, width: 150, vel: 0.2},
+  {x: 50, y: 100, height: 150, width: 200, vel: 0.3},
+  {x: 900, y: 75, height: 80, width: 120, vel: -0.2},
+  {x: 700, y: 30, height: 200, width: 260, vel: 0.25},
+  {x: 453, y: 30, height: 160, width: 210, vel: -0.2}
+]
+
+var players = [
+  //player 1
+  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0, orbCount: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce},
+  //player 2
+  {x: 17, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 17, spawnY: 450, score: 0, orbCount: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
+]
+
+var enemies = [
+  {x: 30, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 60, spawnY: 155, targetX: 30, targetY: 155, image: badGuyRight, flapCounter: 0},
+  {x: 432, y: 95, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 450, spawnY: 95, targetX: 432, targetY: 95, image: badGuyRight, flapCounter: 0},
+  {x: 835, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 835, spawnY: 155, targetX: 835, targetY: 155, image: badGuyLeft, flapCounter: 0},
+  {x: 5, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 5, spawnY: 321, targetX: 5, targetY: 321, image: badGuyRight, flapCounter: 0},
+  {x: 860, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 960, spawnY: 321, targetX: 860, targetY: 321, image: badGuyLeft, flapCounter: 0}
+
+]
+
+var enemySpawns = [
+  {x: -100, y: 450},
+  {x: -100, y: 350},
+  {x: -100, y: 250},
+  {x: -100, y: 150},
+  {x: -100, y: 50},
+  {x: 1000, y: 50},
+  {x: 1000, y: 50},
+  {x: 1000, y: 50},
+  {x: 1000, y: 50},
+  {x: 1000, y: 50}
+]
+
+var platforms = [
+  {x: -100, y: -105, width: 1100, height: 105},
+  {x: 0, y: 188, width: 125, height: 25},
+  {x: 388, y: 130, width: 125, height: 25},
+  {x: 775, y: 188, width: 125, height: 25},
+  {x: 0, y: 356, width: 62, height: 25},
+  {x: 290, y: 332, width: 315, height: 25},
+  {x: 838, y: 356, width: 62, height: 25},
+  {x: -100, y: 475, width: 1100, height: 25}
+]
+
+
 
 //The usage of => refers to the object. these prototypes control the speed powerup
 Object.prototype.speedReset = function() {
@@ -115,9 +180,9 @@ Object.prototype.speedReset = function() {
 
 Object.prototype.speedBoost = function(){
   this.orbCount++;
-  this.moveSpeed = 4.5;
-  this.jumpSpeed = 4.5;
-  this.jumpForce = 3;
+  this.moveSpeed = moveBoost;
+  this.jumpSpeed = jumpBoostSpeed;
+  this.jumpForce = jumpBoostForce;
   setTimeout(() => {
     this.speedReset();
   }, 10000);
@@ -141,65 +206,6 @@ function Energy(x, y, boolean) {
   this.frameCounter = 0;
 }
 
-//this array contains all of the powerups on screen
-var energy = [];
-
-//Set the jouster images as a variable
-var jouster = jouster1Left;
-var jouster2 = jouster2Right;
-
-//clouds
-var clouds = [
-  {x: 0, y: 30, height: 100, width: 150, vel: 0.2},
-  {x: 50, y: 100, height: 150, width: 200, vel: 0.3},
-  {x: 900, y: 75, height: 80, width: 120, vel: -0.2},
-  {x: 700, y: 30, height: 200, width: 260, vel: 0.25},
-  {x: 453, y: 30, height: 160, width: 210, vel: -0.2}
-]
-
-var players = [
-  //player 1
-  {x: 850, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 850, spawnY: 450, score: 0, orbCount: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce},
-  //player 2
-  {x: 17, y: 450, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 17, spawnY: 450, score: 0, orbCount: 0, moveSpeed: moveSpeed, jumpSpeed: jumpSpeed, jumpForce: jumpForce}
-]
-
-var enemies = [
-{x: 30, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 60, spawnY: 155, targetX: 30, targetY: 155, image: badGuyRight, flapCounter: 0},
-{x: 432, y: 95, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 450, spawnY: 95, targetX: 432, targetY: 95, image: badGuyRight, flapCounter: 0},
-{x: 835, y: 155, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 835, spawnY: 155, targetX: 835, targetY: 155, image: badGuyLeft, flapCounter: 0},
-{x: 5, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: false, spawnX: 5, spawnY: 321, targetX: 5, targetY: 321, image: badGuyRight, flapCounter: 0},
-{x: 860, y: 321, velX: 0, velY: 0, width: 35, height: 35, isJumping: false, facingLeft: true, spawnX: 960, spawnY: 321, targetX: 860, targetY: 321, image: badGuyLeft, flapCounter: 0}
-
-]
-
-var enemySpawns = [
-  {x: -100, y: 450},
-  {x: -100, y: 350},
-  {x: -100, y: 250},
-  {x: -100, y: 150},
-  {x: -100, y: 50},
-  {x: 1000, y: 50},
-  {x: 1000, y: 50},
-  {x: 1000, y: 50},
-  {x: 1000, y: 50},
-  {x: 1000, y: 50}
-]
-
-//Platforms
-var platforms = [
-  {x: -100, y: -105, width: 1100, height: 105},
-  {x: 0, y: 188, width: 125, height: 25},
-  {x: 388, y: 130, width: 125, height: 25},
-  {x: 775, y: 188, width: 125, height: 25},
-  {x: 0, y: 356, width: 62, height: 25},
-  {x: 290, y: 332, width: 315, height: 25},
-  {x: 838, y: 356, width: 62, height: 25},
-  {x: -100, y: 475, width: 1100, height: 25}
-]
-
-//Empty array for key functionality
-keys=[];
 
 // Document ready point
 $().ready(function() {
@@ -231,7 +237,6 @@ document.addEventListener('keydown', function(e){
   //Enter Key to kick off update loop
   if(e.keyCode == 13 && !gameStarted){
     keys[13] = false;
-
     update();
     clearInterval(blinkInterval);
     clearInterval(logoLoop);
@@ -242,12 +247,10 @@ document.addEventListener('keyup', function(e){
   keys[e.keyCode] = false;
 });
 
-
 // This is the function to draw the game
 function drawMain() {
   context.fillStyle = "black";
   context.fillRect(0,0, canvas.width, canvas.height);
-  // context.drawImage(joustLogo, canvas.width/2-joustLogo.width/2, canvas.height/2-joustLogo.height);
   blinkInterval = setInterval(blinkText, 500);
   logoInterval = setInterval(logoLoop, 250);
 }
