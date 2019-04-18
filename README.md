@@ -1,243 +1,84 @@
 # Jousting
 
-#### This project is for recreating the arcade classic of Joust, 4/14/19
+#### This project recreates the arcade classic Joust, 4/18/19
 
 
-#### By _**Insert**_
+#### By _**Brendan Hellar, Zach Weintraub, Dylan Crocker, Crystal Fecteau**_
 
 ## Description
 
-
-#### The goal of this project is to recreate the arcade classic of Joust.  This project will display what we have learned up until week 5 of Epicodus.
-
-###### This portion establishes variables to become images that will be utilzed in the program.
-```
-var jouster1Left = new Image();
-var jouster1Right = new Image();
-var jouster2Left = new Image();
-var jouster2Right = new Image();
-var joustLogo = new Image();
-var background = new Image();
-```
-###### This portion will link the images to their sources so we can have them appear in the game. In addition to this we have a blink variable which will be explained later.
-```
-jouster1Left.src = "img/Jouster1Left.png";
-jouster1Right.src = "img/Jouster1Right.png";
-jouster2Left.src = "img/Jouster2Left.png";
-jouster2Right.src = "img/Jouster2Right.png";
-joustLogo.src = "img/Logo.gif";
-background.src = "img/background.png";
-var blink = true;
-```
-######  This sets the jouster as a variable that can be used later.
-```
-var jouster = jouster1Left;
-var jouster2 = jouster2Right;
-```
-###### This sets the starting positioning of Player 1.
-```
-player1PosX = 850;
-player1PosY = 450;
-player1VelX = 0;
-player1VelY = 0;
-```
-###### This sets the starting positioning of Player 2.
-```
-player2PosX = 0;
-player2PosY = 450;
-player2VelX = 0;
-player2VelY = 0;
-```
-###### Initial variable settings and empty key for keystrokes which allow for our character movements to be smoother.
-```
-friction = .98;
-moveSpeed = 1.5;
-jumpSpeed = 1.5;
-keys=[];
-```
-###### This is our ready function and sets up the canvas and allows us to draw on it.  This also activates the function drawMain.
-```
-$().ready(function() {
-  canvas = $("#canvas").get(0);
-  context = canvas.getContext("2d");
-  drawMain();
-});
-```
-###### This is the powerhouse of our work and is the update function which calls on 4 functions to run.
-```
-function update(){
-    requestAnimationFrame(update);
-    getInput();
-    physics();
-    drawGame();
-  }
-```
-###### This is our event listener that allows the user to experience little lag time in button responses. 
-```
-document.addEventListener('keydown', function(e){
-    keys[e.keyCode] = true;
-    if(e.keyCode == 40){
-      e.preventDefault();
-    }
-    if(e.keyCode == 13){
-      update();
-      clearInterval(blinkInterval);
-      keys[13] = false;
-
-    }
-  });
-  document.addEventListener('keyup', function(e){
-    keys[e.keyCode] = false;
-  });
-```
-###### This function allows for the initial draw on the canvas.  It sets our width to the canvas and same with height.  It also draws our logo and blinks the starting text.
-```
-function drawMain() {
-    context.fillStyle = "black";
-    context.fillRect(0,0, canvas.width, canvas.height);
-    context.drawImage(joustLogo, canvas.width/2-joustLogo.width/2, canvas.height/2-joustLogo.height);
-    blinkInterval = setInterval(blinkText, 500);
-  }
-```
-###### This is the function we use to blink the intro text telling the users to press Enter.
-```
-function blinkText(){
-    if(!blink){
-      context.font ="30px Fantasy";
-      context.fillStyle = "white";
-      context.fillText("Press Enter", canvas.width/2-80, canvas.height/2+60);
-      blink = true;
-    }
-    else if(blink){
-      context.fillStyle = "black";
-      context.fillRect(canvas.width/2-100, canvas.height/2+30, 200, 35);
-      blink = false;
-    }
-  }
-```
-###### Once the Enter button is pressed this function draws the Jousters and the new background that the players can play on.
-```
-function drawGame(){
-    //wrap
-    if(player1PosX > canvas.width){
-      player1PosX = -40;
-    }
-    if(player2PosX > canvas.width){
-      player2PosX = -40;
-    }
-    if(player1PosX< -40) {
-      player1PosX = canvas.width;
-    }
-    if(player2PosX< -40) {
-      player2PosX = canvas.width;
-    }
-
-    context.clearRect(0,0, canvas.width, canvas.height);
-    context.fillStyle = "black";
-    context.fillRect(0,0,canvas.width, canvas.height);
-    context.drawImage(background,0, 0, canvas.width, canvas.height);
-    context.drawImage(jouster, player1PosX+=player1VelX, player1PosY+=player1VelY, 35, 35);
-    context.drawImage(jouster2, player2PosX+=player2VelX, player2PosY+=player2VelY, 35, 35);
-  }
-```
-###### These are the controls for both Jouster 1 and Jouster 2
-```
-function getInput(){
-    if(keys[37]){
-      if(player1VelX > -moveSpeed){
-        player1VelX--;
-      }
-      jouster = jouster1Left;
-    }
-    if (keys[39]){
-      if(player1VelX < moveSpeed){
-        player1VelX++;
-      }
-      jouster= jouster1Right;
-    }
-    if (keys[38]){
-      if (player1VelY > -jumpSpeed) {
-        player1VelY--;
-      }
-    }
-    if(keys[65]){
-      if(player2VelX > -moveSpeed){
-        player2VelX--;
-      }
-      jouster2 = jouster2Left;
-    }
-    if (keys[68]){
-      if(player2VelX < moveSpeed){
-        player2VelX++;
-      }
-      jouster2 = jouster2Right;
-    }
-    if (keys[87]){
-      if (player2VelY > -jumpSpeed) {
-        player2VelY--;
-      }
-
-    }
-  }
-```
-###### Physics and collider mechanics
-```
-  var floor = 555;
-  var ceiling = 0;
-```
-###### Physics function that actives the gravity variable and helps with player positioning.
-```
-function physics(){
-
-    if(player1PosY <= floor){
-      player1VelY+=.098; //gravity
-    }
-    else{
-      player1PosY = floor;
-      player1VelY = 0
-    }
-    if(player2PosY <= floor){
-      player2VelY+=.098; //gravity
-    }
-    else{
-      player2PosY = floor;
-      player2VelY = 0
-    }
-    if(player1PosY <= ceiling){
-      player1PosY = 0
-    }
-    if(player2PosY <= ceiling){
-      player2PosY = 0
-    }
-    player1VelX*=friction; //friction
-    player2VelX*=friction; //friction
-
-  }
-```
-
-=======
+#### The goal of this project is to recreate the arcade classic Joust.
+<br>
 
 ## Setup/Installation Requirements
 
--   Please clone from the Github repo Insert
--   By pressing Enter the player is allowed to play Joust.
+-   Please clone from the Github repo
+-   Open index.html in your favorite browser.
 
-This app requires the internet as it uses HTMl and CSS and Javascript.
+  or
+
+-   Click [this link](https://dtpc22.github.io/joust/).
+
+## How to start game
+
+| Start Game | Input | Output |
+| :-------------     | :------------- | :------------- |
+| **Load Game** | User input: "Press Enter" | Output: "Joust Game Play" |
+| **Restart Game**| User input: "Enter" | Output: "Reset Game" |
+
+## Players Controls
+
+|  Player 1  |  Player 2 |
+| :-------------     | :------------- |
+| Left Screen | Right Screen |
+| A = Move Left | Left Arrow = Move Left |
+| D = Move Right | Right Arrow = Move Right |
+| Spacebar = Fly/Jump | [/?] Key = Fly/Jump |
+
+## Orb Functions
+
+| Points | Input | Output |
+| :-------------     | :------------- | :------------- |
+| **Green Orb** | User input: "Picks up green orb from enemies killed" | Output: "Player gains one point" |
+| **Yellow Orb**| User input: "Picks up yellow orb from players killed" | Output: "Player gains 10 second speed boost" |
+
+## Win and Lose Collision Conditions
+
+| Kills| Action | Output |
+| :-------------     | :------------- | :------------- |
+| **Win** | User Action: "Higher position on face to face collision" | Output: "Higher player wins" |
+| **Lose**| User Action: "Lower position on face to face collision" | Output: "Lower player dies and respawns" |
+| **Win** | User Action: "Player attacking from behind" | Output: "Attacking player wins" |
+| **Lose**| User Action: "Player facing away from collision" | Output: "Player facing away dies and respawns" |
+
+## Game Winner Conditions
+
+| Winner | |
+| :-------------     | :------------- |
+| **Win** | First Player to 30pts |
+| **Lose** | Player did now get to 30pts first |
+
 
 ## Known Bugs
 
-No known bugs
+Point orbs occasionally disappear. Unknown how to recreate.
 
 ## Support and contact details
 
-If you have any issues please contact Insert
+If you have any issues please contact:
+* Brendan Hellar - bwhellar@gmail.com
+* Zach Weintraub - zachweintraub@gmail.com
+* Dylan Crocker - dylan.t.crocker@gmail.com
+* Crystal Fecteau - Crystal_Fecteau@ymail.com
 
 ## Technologies Used
 
-HTML and CSS and Javascript
+* HTML
+* CSS
+* JavaScript
 
 ### License
 
-MIT
+*This software is licensed under the MIT license*
 
-Copyright (c) 2019 **Insert**
+Copyright (c) 2019**_{Brendan Hellar, Zach Weintraub, Dylan Crocker, Crystal Fecteau}_
