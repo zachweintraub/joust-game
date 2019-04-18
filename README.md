@@ -1,17 +1,28 @@
 # Jousting
 
-#### This project is for recreating the arcade classic of Joust, 4/18/19
+
+#### This project recreates the arcade classic Joust, 4/18/19
+=======
+
+
 
 
 #### By _**Brendan Hellar, Zach Weintraub, Dylan Crocker, Crystal Fecteau**_
 
 ## Description
 
-#### The goal of this project is to recreate the arcade classic of Joust.  This project will display what we have learned up until week 5 of Epicodus.
 
-###### This portion establishes how to start, play, and win in Joust
+#### The goal of this project is to create a Joust inspired game using JavaScript.
+<br>
 
-### Specs
+## Setup/Installation Requirements
+
+-   Please clone from the Github repo
+-   Open index.html in your favorite browser.
+
+  or
+
+-   Click [this link](https://dtpc22.github.io/joust/).
 
 ## How to start game
 
@@ -36,40 +47,34 @@
 | **Green Orb** | User input: "Picks up green orb from enemies killed" | Output: "Player gains one point" |
 | **Yellow Orb**| User input: "Picks up yellow orb from players killed" | Output: "Player gains 10 second speed boost" |
 
-## Win and Lose Collison Condtions
+## Win and Lose Collision Conditions
 
 | Kills| Action | Output |
 | :-------------     | :------------- | :------------- |
-| **Win** | User Action: "Higher postion on face to face collison" | Output: "Higher player wins" |
-| **Lose**| User Action: "Lower postion on face to face collison" | Output: "Lower player dies and respawns" |
+| **Win** | User Action: "Higher position on face to face collision" | Output: "Higher player wins" |
+| **Lose**| User Action: "Lower position on face to face collision" | Output: "Lower player dies and respawns" |
 | **Win** | User Action: "Player attacking from behind" | Output: "Attacking player wins" |
-| **Lose**| User Action: "Player facing away from collison" | Output: "Player facing away dies and respawns" |
+| **Lose**| User Action: "Player facing away from collision" | Output: "Player facing away dies and respawns" |
 
-## Game Winner Condtions
+## Game Winner Conditions
 
-| Winner | | 
+| Winner | |
 | :-------------     | :------------- |
 | **Win** | First Player to 30pts |
-| **Lose** | Player did now get to 30pts first |
-
-
-## Setup/Installation Requirements
-
--   Please clone from the Github repo Insert or copy this link https://dtpc22.github.io/joust/
--   By pressing Enter the player is allowed to play Joust.
-
-This app requires the internet as it uses HTMl and CSS and Javascript.
+| **Lose** | Player did not get to 30pts first |
+=======
 
 ## Known Bugs
 
-No known bugs
+Point orbs occasionally disappear. Unknown how to recreate.
 
 ## Support and contact details
 
 If you have any issues please contact:
-* Brendan Hellar - 123@mail.com 
-* Zach Weintraub - 123@mail.com
-* Dylan Crocker - 23@mail.com
+
+* Brendan Hellar - bwhellar@gmail.com
+* Zach Weintraub - zachweintraub@gmail.com
+* Dylan Crocker - dylan.t.crocker@gmail.com
 * Crystal Fecteau - Crystal_Fecteau@ymail.com
 
 ## Technologies Used

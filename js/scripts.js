@@ -38,8 +38,6 @@ var speed4 = new Image();
 
 var soundtrack = new Audio();
 var winSong = new Audio();
-soundtrack.src = "GameMusic.wav";
-winSong.src = "PossibleEndingSong.wav";
 
 var enemyDeathSFX = new Audio();
 var playerDeathSFX = new Audio();
@@ -79,10 +77,12 @@ speed2.src = "img/Orbs/Speed1.png";
 speed3.src = "img/Orbs/Speed2.png";
 speed4.src = "img/Orbs/Speed3.png";
 
-enemyDeathSFX.src = "EnemyDeath.wav";
-playerDeathSFX.src = "PlayerDeath.wav";
-pointSoundSFX.src = "Pointadd.wav";
-speedBoostSFX.src = "Speed.wav";
+enemyDeathSFX.src = "Sounds/EnemyDeath.wav";
+playerDeathSFX.src = "Sounds/PlayerDeath.wav";
+pointSoundSFX.src = "Sound/Pointadd.wav";
+speedBoostSFX.src = "Sounds/Speed.wav";
+soundtrack.src = "Sounds/GameMusic.wav";
+winSong.src = "Sounds/Credits.wav";
 
 // This is where we are setting some initial variables
 const friction = 0.98;
