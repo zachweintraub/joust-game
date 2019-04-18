@@ -16,7 +16,6 @@ var badGuyRightFlap = new Image();
 var badGuy = badGuyLeft;
 
 var cloud = new Image();
-var cloudPos = 45;
 var logo1 = new Image();
 var logo2 = new Image();
 var logo3 = new Image();
@@ -45,43 +44,44 @@ var speedBoostSFX = new Audio();
 
 //Grabbing the source for the images.
 //players
-jouster1Left.src = "img/sprite1_left.png";
-jouster1LeftFlap.src = "img/sprite1_leftflap.png";
-jouster1Right.src = "img/sprite1_right.png";
-jouster1RightFlap.src = "img/sprite1_rightflap.png";
-jouster2Left.src = "img/sprite2_left.png";
-jouster2LeftFlap.src = "img/sprite2_leftflap.png";
-jouster2Right.src = "img/sprite2_right.png";
-jouster2RightFlap.src = "img/sprite2_rightflap.png";
+jouster1Left.src = "img/jouster/sprite1_left.png";
+jouster1LeftFlap.src = "img/jouster/sprite1_leftflap.png";
+jouster1Right.src = "img/jouster/sprite1_right.png";
+jouster1RightFlap.src = "img/jouster/sprite1_rightflap.png";
+jouster2Left.src = "img/jouster/sprite2_left.png";
+jouster2LeftFlap.src = "img/jouster/sprite2_leftflap.png";
+jouster2Right.src = "img/jouster/sprite2_right.png";
+jouster2RightFlap.src = "img/jouster/sprite2_rightflap.png";
 //baddies
-badGuyLeft.src = "img/BadGuy_Left.png";
-badGuyLeftFlap.src = "img/BadGuy_LeftFlap.png";
-badGuyRight.src = "img/BadGuy_Right.png";
-badGuyRightFlap.src = "img/BadGuy_RightFlap.png";
+badGuyLeft.src = "img/jouster/BadGuy_Left.png";
+badGuyLeftFlap.src = "img/jouster/BadGuy_LeftFlap.png";
+badGuyRight.src = "img/jouster/BadGuy_Right.png";
+badGuyRightFlap.src = "img/jouster/BadGuy_RightFlap.png";
 //environment
-cloud.src = "img/cloud0.png";
-logo1.src = "img/JoustLogo0.png";
-logo2.src = "img/JoustLogo1.png";
-logo3.src = "img/JoustLogo2.png";
-logo4.src = "img/JoustLogo3.png";
-platformsImg.src = "img/platformsImg.png";
-background.src = "img/newBack.png";
+cloud.src = "img/environment/cloud0.png";
+platformsImg.src = "img/environment/platformsImg.png";
+background.src = "img/environment/newBack.png";
+//logo
+logo1.src = "img/logo/JoustLogo0.png";
+logo2.src = "img/logo/JoustLogo1.png";
+logo3.src = "img/logo/JoustLogo2.png";
+logo4.src = "img/logo/JoustLogo3.png";
 //orbs
-energy1.src = "img/orbs/Energy1.png";
-energy2.src = "img/orbs/Energy2.png";
-energy3.src = "img/orbs/Energy3.png";
-energy4.src = "img/orbs/Energy4.png";
-speed1.src = "img/orbs/Speed0.png";
-speed2.src = "img/orbs/Speed1.png";
-speed3.src = "img/orbs/Speed2.png";
-speed4.src = "img/orbs/Speed3.png";
+energy1.src = "img/orb/Energy1.png";
+energy2.src = "img/orb/Energy2.png";
+energy3.src = "img/orb/Energy3.png";
+energy4.src = "img/orb/Energy4.png";
+speed1.src = "img/orb/Speed0.png";
+speed2.src = "img/orb/Speed1.png";
+speed3.src = "img/orb/Speed2.png";
+speed4.src = "img/orb/Speed3.png";
 //sounds
-enemyDeathSFX.src = "sounds/EnemyDeath.wav";
-playerDeathSFX.src = "sounds/PlayerDeath.wav";
+enemyDeathSFX.src = "sound/EnemyDeath.wav";
+playerDeathSFX.src = "sound/PlayerDeath.wav";
 pointSoundSFX.src = "sound/Pointadd.wav";
-speedBoostSFX.src = "sounds/Speed.wav";
-soundtrack.src = "sounds/GameMusic.wav";
-winSong.src = "sounds/Credits.wav";
+speedBoostSFX.src = "sound/Speed.wav";
+soundtrack.src = "sound/GameMusic.wav";
+winSong.src = "sound/Credits.wav";
 
 
 //flag used to toggle enter key functionality
@@ -96,7 +96,7 @@ const jumpForce = 2;
 const moveBoost = 3.5;
 const jumpBoostForce = 2.5;
 const jumpBoostSpeed = 3.5;
-const winScore = 5;
+const winScore = 30;
 
 //press enter blink text and logo array
 var blink = true;
@@ -110,7 +110,7 @@ var speedOrb = [speed1, speed1, speed1, speed1, speed2, speed2, speed2, speed2, 
 var energy = [];
 
 //Empty array for key functionality
-var keys=[];
+var keys = [];
 
 //Set the jouster images as a variable
 var jouster = jouster1Left;
@@ -211,7 +211,6 @@ $().ready(function() {
   //Getting the canvas to work on and allow us to write
   canvas = $("#canvas").get(0);
   context = canvas.getContext("2d");
-  //update();
   drawMain();
 });
 
@@ -321,6 +320,7 @@ function drawGame(){
   //fill canvas black
   fillBlack();
 
+  //draw mountains
   context.drawImage(background,0,0, canvas.width, canvas.height);
 
   //draw cloud
@@ -329,7 +329,7 @@ function drawGame(){
     if (clouds[i].x > canvas.width && clouds[i].vel > 0){
       clouds[i].x = -clouds[i].width;
     }
-    if (clouds[i].x < 0 && clouds[i].vel < 0){
+    if (clouds[i].x < 0 - clouds[i].width && clouds[i].vel < 0){
       clouds[i].x = canvas.width + clouds[i].width;
     }
   }
@@ -698,9 +698,6 @@ function winner(player) {
   theWinner=player;
   gameStarted = false;
   cancelAnimationFrame(gameLoop);
-
-  if(player == players[0]) console.log("player1 wins");
-  else if (player== players[1]) console.log("player2 wins");
   resetGame();
   drawCredits();
 }
