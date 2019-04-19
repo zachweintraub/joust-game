@@ -204,6 +204,11 @@ function Energy(x, y, boolean) {
   this.frameCounter = 0;
 }
 
+function initiateOnePlayer() {
+  players[0].isBot = true;
+  players[0].targetX = players[0].x;
+  players[0].targetY = players[0].y;
+}
 
 // Document ready point
 $().ready(function() {
@@ -221,6 +226,7 @@ function update(){
   gameLoop = requestAnimationFrame(update);
   getInput();
   enemyMovement();
+  if(players[0].isBot) botMovement();
   physics();
   wrapPlayers();
   drawGame();
@@ -235,12 +241,22 @@ document.addEventListener('keydown', function(e){
   //Enter Key to kick off update loop
   if(e.keyCode == 13 && !gameStarted){
     keys[13] = false;
+    players[0].isBot = false;
+    update();
+    clearInterval(blinkInterval);
+    clearInterval(logoLoop);
+    gameStarted=true;
+  }
+  if(e.keyCode == 49 && !gameStarted){
+    keys[49] = false;
+    initiateOnePlayer();
     update();
     clearInterval(blinkInterval);
     clearInterval(logoLoop);
     gameStarted=true;
   }
 });
+
 document.addEventListener('keyup', function(e){
   keys[e.keyCode] = false;
 });
@@ -510,6 +526,52 @@ function enemyMovement() {
     if (enemies[i].y > enemies[i].targetY - 10 && enemies[i].y < enemies[i].targetY + 10) {
       enemies[i].targetY = Math.floor(Math.random() * 440);
     }
+  }
+}
+
+function determineBotTarget() {
+  var targetArr = [];
+  for(var i = 0; i < energy.length; i++) {
+    if(energy[i].isPoint) {
+      targetArr.push({x: energy[i].x, y: energy[i].y, distance: Math.abs(energy[i].x - players[0].x) + Math.abs(energy[i].y - players[0].y)});
+    }
+  }
+  for(var i = 0; i < enemies.length; i++) {
+    targetArr.push({x: enemies[i].x, y: enemies[i].y, distance: Math.abs(enemies[i].x - players[0].x) + Math.abs(enemies[i].y - players[0].y)})
+  }
+  function compareDistance(a, b) {
+    var aDistance = a.distance;
+    var bDistance = b.distance;
+    if(aDistance > bDistance) {
+      return 1;
+    }
+    else if (aDistance < bDistance) {
+      return -1;
+    }
+    else return 0;
+  }
+  targetArr.sort(compareDistance);
+  players[0].targetX = targetArr[0].x;
+  players[0].targetY = targetArr[0].y - 5;
+}
+
+function botMovement() {
+  determineBotTarget();
+  if(players[0].targetX > players[0].x) {
+    players[0].velX = 1;
+    players[0].facingLeft = false;
+    jouster = jouster1Right;
+  }
+  if(players[0].targetX < players[0].x) {
+    players[0].velX = -1;
+    players[0].facingLeft = true;
+    jouster = jouster1Left;
+  }
+  if(players[0].targetY < players[0].y) {
+    players[0].velY = -jumpForce;
+  }
+  if(players[0].targetY > players[0].y) {
+    players[0].velY = players[0].velY+=gravity;
   }
 }
 
