@@ -317,12 +317,13 @@ function blinkText(){
   if(!blink){
     context.font ="30px menuFont";
     context.fillStyle = "white";
-    context.fillText("Press Enter", canvas.width/2-70, canvas.height/2+60);
+    context.fillText("1 Player - Press 1", canvas.width/2-130, canvas.height/2+40);
+    context.fillText("2 Players - Press Enter", canvas.width/2-160, canvas.height/2+80);
     blink = true;
   }
   else if(blink){
     context.fillStyle = "black";
-    context.fillRect(canvas.width/2-80, canvas.height/2+33, 200, 35);
+    context.fillRect(canvas.width/2-180, canvas.height/2+10, 350, 80);
     blink = false;
   }
 }
